@@ -2,6 +2,8 @@ import {
   IconFiles,
   IconMessage,
   IconMessages,
+  IconSettings,
+  IconSettings2,
   IconUsers,
   IconVideo,
 } from "@tabler/icons-react";
@@ -22,6 +24,9 @@ const SideBar = () => {
       </Link>
       <Link href={"video"}>
         <IconVideo className="opacity-70 hover:opacity-100 hover:text-purple-400" />
+      </Link>
+      <Link href={"settings"}>
+        <IconSettings2 className="opacity-70 hover:opacity-100 hover:text-purple-400" />
       </Link>
     </div>
   );
