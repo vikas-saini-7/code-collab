@@ -17,7 +17,7 @@ export default function Home() {
 
       {/* right  */}
       <div className="flex-1 flex items-start md:items-center justify-center bg-[#1f2130]">
-        <div className="flex flex-col space-y-4 w-full max-w-sm">
+        <div className="flex flex-col space-y-4 w-full max-w-sm px-4">
           <h1 className="font-bold">Enter in a room</h1>
           <input
             className="h-9 rounded px-3 text-black"
@@ -31,7 +31,11 @@ export default function Home() {
             placeholder="Room Id"
           />
           <Link href={`/${roomId}/files`}>
-            <button className="w-full h-9 rounded bg-purple-400 hover:bg-purple-500 font-bold text-xl text-black">
+            <button
+              className={`${
+                roomId === "" && "opacity-20"
+              }  w-full h-9 rounded bg-purple-400 hover:bg-purple-500 font-bold text-xl text-black`}
+            >
               Start
             </button>
           </Link>
