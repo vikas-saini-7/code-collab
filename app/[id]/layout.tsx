@@ -1,7 +1,7 @@
 import React from "react";
 import { ReactNode } from "react";
-import CodeEditor from "../components/room/CodeEditor";
-import SideBar from "../components/room/SideBar";
+import CodeEditor from "../../components/room/CodeEditor";
+import SideBar from "../../components/room/SideBar";
 
 export default function layout({ children }: { children: ReactNode }) {
   return (

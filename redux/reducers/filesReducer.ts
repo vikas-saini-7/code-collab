@@ -5,8 +5,8 @@ interface filesState {
 }
 
 const initialState = {
-    value: "",
-}
+  value: "",
+};
 
 const filesSlice = createSlice({
   name: "files",
@@ -15,9 +15,8 @@ const filesSlice = createSlice({
     changeCode: (state, action) => {
       console.log("Running", action.payload);
     },
-    },
   },
 });
 
-export const {  } = filesSlice.actions;
+export const { changeCode } = filesSlice.actions;
 export default filesSlice.reducer;

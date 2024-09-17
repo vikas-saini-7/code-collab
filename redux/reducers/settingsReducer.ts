@@ -1,3 +1,4 @@
+"use client";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 type LangsType = keyof typeof import("@uiw/codemirror-extensions-langs").langs;
 

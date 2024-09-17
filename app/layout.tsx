@@ -3,7 +3,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import { Provider } from "react-redux";
 import { store } from "@/redux/store";
-import GlobalProvider from "./components/providers/globalProvider";
+import GlobalProvider from "../components/providers/globalProvider";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
