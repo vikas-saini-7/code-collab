@@ -23,11 +23,11 @@ const FILES: IFile[] = [
   {
     id: 2,
     icon: "📄",
-    name: "spreadsheet",
-    extension: "xlsx",
+    name: "program",
+    extension: "java",
     type: "spreadsheet",
     size: 2048,
-    value: `sheet value`,
+    value: `psvm()`,
   },
 ];
 
@@ -45,17 +45,36 @@ const filesSlice = createSlice({
   name: "files",
   initialState,
   reducers: {
+    // change code
     changeCode: (state, action) => {
       console.log("Running", action.payload);
       state.activeFile.value = action.payload;
     },
+
+    // changeActiveFile
     changeActiveFile: (state, action) => {
       let file = action.payload;
       state.activeFile = file;
     },
+
+    // createFile
+    createFile: (state, action) => {
+      let [name, extension] = action.payload.split(".");
+      let newFile: IFile = {
+        id: state.filesList.length + 1,
+        icon: "📄",
+        name: name,
+        extension: extension,
+        size: 1024,
+        type: "document",
+        value: "",
+      };
+      state.filesList.push(newFile);
+    },
+
+    // saveFile
     saveFile: (state, action) => {
-      // Determine the MIME type based on the file extension
-      let fileType = "text/plain;charset=utf-8"; // Default MIME type
+      let fileType = "text/plain;charset=utf-8";
       switch (state.activeFile.extension) {
         case "txt":
           fileType = "text/plain;charset=utf-8";
@@ -75,22 +94,33 @@ const filesSlice = createSlice({
         case "js":
           fileType = "application/javascript";
           break;
-        // Add more cases as needed for other file types
         default:
-          fileType = "application/octet-stream"; // Fallback MIME type
+          fileType = "application/octet-stream";
       }
 
       console.log("saving file");
-      const blob = new Blob([state.activeFile.value], {
+      const blob = new Blob([state.activeFile.value || ""], {
         type: fileType,
       });
       const link = document.createElement("a");
       link.href = URL.createObjectURL(blob);
-      link.download = state.activeFile.name;
+      link.download = state.activeFile.name + "." + state.activeFile.extension;
       link.click();
+    },
+
+    fileDelete: (state, action) => {
+      state.filesList = state.filesList.filter(
+        (item) => item.id !== action.payload.id
+      );
     },
   },
 });
 
-export const { changeCode, changeActiveFile, saveFile } = filesSlice.actions;
+export const {
+  changeCode,
+  changeActiveFile,
+  createFile,
+  saveFile,
+  fileDelete,
+} = filesSlice.actions;
 export default filesSlice.reducer;
