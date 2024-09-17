@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import toast from "react-hot-toast";
 
 interface IFile {
   id: number;
@@ -71,6 +72,7 @@ const filesSlice = createSlice({
       };
       state.filesList.push(newFile);
       state.activeFile = newFile;
+      toast.success("file created");
     },
 
     // saveFile
@@ -110,9 +112,12 @@ const filesSlice = createSlice({
     },
 
     fileDelete: (state, action) => {
-      state.filesList = state.filesList.filter(
-        (item) => item.id !== action.payload.id
-      );
+      let consent = confirm("Are you sure You want to delete this file");
+      if (consent) {
+        state.filesList = state.filesList.filter(
+          (item) => item.id !== action.payload.id
+        );
+      }
     },
   },
 });

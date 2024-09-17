@@ -1,16 +1,17 @@
 "use client";
+import React, { useRef, useState, useEffect } from "react";
+import { IconPlus, IconTrash, IconX } from "@tabler/icons-react";
+import { useAppDispatch, useAppSelector } from "@/redux/store";
 import {
   changeActiveFile,
   createFile,
   fileDelete,
   saveFile,
 } from "@/redux/reducers/filesReducer";
-import { useAppDispatch, useAppSelector } from "@/redux/store";
-import { IconPlus, IconTrash, IconX } from "@tabler/icons-react";
-import React, { useState } from "react";
 
 const page: React.FC = () => {
   const dispatch = useAppDispatch();
+  const inputRef = useRef<HTMLInputElement>(null);
 
   // store
   const filesList = useAppSelector((item) => item.files.filesList);
@@ -40,6 +41,12 @@ const page: React.FC = () => {
     dispatch(fileDelete(file));
   };
 
+  useEffect(() => {
+    if (createFileVisible && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [createFileVisible]);
+
   return (
     <div className="p-4 h-full flex flex-col justify-between">
       <div>
@@ -61,11 +68,12 @@ const page: React.FC = () => {
         <div>
           {filesList.map((file) => (
             <div
+              key={file.id}
               onClick={() => handleActiveFileChange(file)}
               className={`${
                 file.id === activeFile.id &&
                 "bg-gray-500/10 hover:bg-gray-500/10"
-              } hover:bg-gray-500/5 mb-1 rounded px-2 py-1 flex gap-1 items-center justify-between text-sm cursor-pointer `}
+              } hover:bg-gray-500/10 mb-1 rounded px-2 py-1 flex gap-1 items-center justify-between text-sm cursor-pointer `}
             >
               <div className="flex items-center gap-1">
                 <p>{file.icon}</p>
@@ -91,6 +99,7 @@ const page: React.FC = () => {
             >
               <p>📄</p>
               <input
+                ref={inputRef}
                 className="bg-transparent w-full px-[1px] outline-none"
                 type="text"
                 onKeyDown={handleCreateFile}
