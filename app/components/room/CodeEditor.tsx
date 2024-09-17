@@ -17,6 +17,15 @@ const CodeEditor: React.FC = () => {
     console.log("val:", val);
     setValue(val);
   }, []);
+
+  const saveFile = () => {
+    const blob = new Blob([value], { type: "text/plain;charset=utf-8" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "code.txt";
+    link.click();
+  };
+
   return (
     <div className="text-gray-900 h-screen">
       <CodeMirror
@@ -28,6 +37,12 @@ const CodeEditor: React.FC = () => {
         theme={dracula}
         style={{ fontSize: `${fontSize}px` }}
       />
+      <button
+        onClick={saveFile}
+        className="mt-2 p-2 bg-purple-400 hover:bg-purple-500 text-white rounded"
+      >
+        Save
+      </button>
     </div>
   );
 };

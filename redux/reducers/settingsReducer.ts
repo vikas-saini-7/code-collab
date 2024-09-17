@@ -7,34 +7,35 @@ interface settingsState {
   theme: string;
 }
 
-const initialState: settingsState = {
-  fontSize: 18,
-  language: "javascript",
-  theme: "theme-name",
-};
+const savedState = localStorage.getItem("settingsState");
+const initialState: settingsState = savedState
+  ? JSON.parse(savedState)
+  : {
+      fontSize: 18,
+      language: "javascript",
+      theme: "theme-name",
+    };
 
-const counterSlice = createSlice({
-  name: "counter",
+// Function to save the state to localStorage
+function saveStateToLocalStorage(state: settingsState) {
+  localStorage.setItem("settingsState", JSON.stringify(state));
+}
+
+const settingsSlice = createSlice({
+  name: "settings",
   initialState,
   reducers: {
     changeFontSize: (state, action) => {
       console.log("Running", action.payload);
       state.fontSize = action.payload;
+      saveStateToLocalStorage(state);
     },
     changeLanguage(state, action: PayloadAction<LangsType>) {
       state.language = action.payload;
+      saveStateToLocalStorage(state);
     },
-    // increment: (state) => {
-    //   state.value += 1;
-    // },
-    // decrement: (state) => {
-    //   state.value -= 1;
-    // },
-    // incrementByAmount: (state, action: PayloadAction<number>) => {
-    //   state.value += action.payload;
-    // },
   },
 });
 
-export const { changeFontSize, changeLanguage } = counterSlice.actions;
-export default counterSlice.reducer;
+export const { changeFontSize, changeLanguage } = settingsSlice.actions;
+export default settingsSlice.reducer;

@@ -6,6 +6,7 @@ import {
   changeFontSize,
   changeLanguage,
 } from "@/redux/reducers/settingsReducer";
+import Link from "next/link";
 
 type LangsType = typeof langs;
 
@@ -13,6 +14,7 @@ const page: React.FC = () => {
   const dispatch = useAppDispatch();
   const fontSize = useAppSelector((item) => item.settings.fontSize);
   const language = useAppSelector((item) => item.settings.language);
+  const theme = useAppSelector((item) => item.settings.theme);
 
   const handleFontSizeChange = (size: number) => {
     dispatch(changeFontSize(size));
@@ -22,10 +24,11 @@ const page: React.FC = () => {
 
   return (
     <div className="p-4 space-y-4">
+      {/* language  */}
       <div className="">
         <h2>language: </h2>
         <select
-          className="p-1 text-black"
+          className="p-1 text-black w-full"
           value={language}
           onChange={(e) =>
             dispatch(changeLanguage(e.target.value as keyof LangsType))
@@ -38,6 +41,8 @@ const page: React.FC = () => {
           ))}
         </select>
       </div>
+
+      {/* font size  */}
       <div className="mb-4">
         <h2>font size: </h2>
         <input
@@ -47,11 +52,31 @@ const page: React.FC = () => {
           type="text"
         />
       </div>
+
+      {/* theme: coming soon  */}
+      {/* <div className="">
+        <h2>Theme: </h2>
+        <select
+          className="p-1 text-black w-full"
+          value={theme}
+          onChange={(e) =>
+            dispatch(changeLanguage(e.target.value as keyof LangsType))
+          }
+        >
+          {Object.keys(langs).map((lang) => (
+            <option key={lang} value={lang}>
+              {lang}
+            </option>
+          ))}
+        </select>
+      </div> */}
+
+      {/* save button  */}
       <button
         onClick={handleSave}
         className="w-full h-9 rounded bg-purple-400 hover:bg-purple-500 font-bold text-lg text-black"
       >
-        Save
+        Save & Exit
       </button>
     </div>
   );
