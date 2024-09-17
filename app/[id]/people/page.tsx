@@ -39,12 +39,12 @@ const page: React.FC = () => {
       <div className="grid grid-cols-3 gap-2">
         {people.map((item) => (
           <div
-            className="relative w-full py-2 min-h-14 bg-gray-500/10 rounded flex gap-1 flex-col items-center justify-center"
+            className="w-full py-2 min-h-14 bg-gray-500/10 rounded flex gap-1 flex-col items-center justify-center"
             key={item.id}
           >
-            <span className="absolute top-1 left-1 w-2 h-2 rounded-full bg-green-500"></span>
-            <span className="w-6 h-6 rounded-full bg-gray-500 flex items-center justify-center">
+            <span className="relative w-6 h-6 rounded-full bg-gray-500 flex items-center justify-center">
               {item.name.charAt(0).toUpperCase()}
+              <span className="absolute top-0 -right-1 w-[7px] h-[7px] rounded-full bg-green-500"></span>
             </span>
             <p className="text-xs">{item.name}</p>
           </div>

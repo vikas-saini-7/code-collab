@@ -74,7 +74,7 @@ const page: React.FC = () => {
       {/* save button  */}
       <button
         onClick={handleSave}
-        className="w-full h-9 rounded bg-purple-400 hover:bg-purple-500 font-bold text-lg text-black"
+        className="w-full h-9 rounded bg-purple-400 hover:bg-purple-500 font-bold text-md text-black"
       >
         Save & Exit
       </button>
