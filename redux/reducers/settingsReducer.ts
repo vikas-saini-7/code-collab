@@ -1,4 +1,3 @@
-"use client";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 type LangsType = keyof typeof import("@uiw/codemirror-extensions-langs").langs;
 
@@ -8,7 +7,10 @@ interface settingsState {
   theme: string;
 }
 
-const savedState = localStorage.getItem("settingsState");
+const savedState =
+  typeof localStorage !== "undefined"
+    ? localStorage.getItem("settingsState")
+    : null;
 const initialState: settingsState = savedState
   ? JSON.parse(savedState)
   : {

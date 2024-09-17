@@ -70,6 +70,7 @@ const filesSlice = createSlice({
         value: "",
       };
       state.filesList.push(newFile);
+      state.activeFile = newFile;
     },
 
     // saveFile
