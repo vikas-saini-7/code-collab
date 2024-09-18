@@ -12,10 +12,15 @@ type LangsType = typeof langs;
 
 const page: React.FC = () => {
   const dispatch = useAppDispatch();
+
+  // store
   const fontSize = useAppSelector((item) => item.settings.fontSize);
   const language = useAppSelector((item) => item.settings.language);
   const theme = useAppSelector((item) => item.settings.theme);
+  const username = useAppSelector((item) => item.user.username);
+  const roomId = useAppSelector((item) => item.room.roomId);
 
+  // handlers
   const handleFontSizeChange = (size: number) => {
     dispatch(changeFontSize(size));
   };
@@ -78,6 +83,11 @@ const page: React.FC = () => {
       >
         Save & Exit
       </button>
+
+      <div>
+        <p>Name: {username}</p>
+        <p>Room: {roomId}</p>
+      </div>
     </div>
   );
 };

@@ -4,6 +4,7 @@ import "./globals.css";
 import { Provider } from "react-redux";
 import { store } from "@/redux/store";
 import GlobalProvider from "../components/providers/globalProvider";
+import useSocket from "@/utils/useSocket";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
