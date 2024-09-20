@@ -20,11 +20,18 @@ export default function Home() {
     dispatch(setRoomId(room));
   };
 
-  // const handleEnterPress = (e: any) => {
-  //   if (e.key === "Enter") {
-  //     handleFunction
-  //   }
-  // };
+  const generateRandomRoomId = () => {
+    const generateSegment = () => {
+      return Math.random().toString(36).substring(2, 5);
+    };
+
+    return `${generateSegment()}-${generateSegment()}-${generateSegment()}`;
+  };
+
+  const HandleGenerateRandomRoomId = () => {
+    const uniqueRoomId = generateRandomRoomId();
+    setRoom(uniqueRoomId);
+  };
 
   return (
     <div className=" flex flex-col md:flex-row w-full h-screen bg-[#181926]">
@@ -51,19 +58,25 @@ export default function Home() {
             className="h-9 rounded px-3 text-black"
             type="text"
             placeholder="Room Id"
+            value={room}
           />
           <Link href={`/${room}/files`}>
             <button
+              disabled={room === "" || name === ""}
               onClick={handleSetDetails}
-              disabled={!room && true}
               className={`${
-                room === "" && "opacity-20"
+                (room === "" || name === "") && "opacity-20"
               }  w-full h-9 rounded bg-purple-400 hover:bg-purple-500 font-bold text-xl text-black`}
             >
               Start
             </button>
           </Link>
-          <p className="text-blue-400">Generate unique room id</p>
+          <p
+            onClick={HandleGenerateRandomRoomId}
+            className="text-blue-400 cursor-pointer"
+          >
+            Generate unique Room Id
+          </p>
         </div>
       </div>
     </div>
