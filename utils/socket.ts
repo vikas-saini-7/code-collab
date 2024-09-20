@@ -3,7 +3,6 @@ import { io } from "socket.io-client";
 
 const backendUrl =
   process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:9000";
-console.log(`Connecting to backend at: ${backendUrl}`);
 
 const socket = io(backendUrl);
 
