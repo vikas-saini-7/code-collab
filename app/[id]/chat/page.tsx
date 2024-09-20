@@ -16,16 +16,6 @@ const page: React.FC = () => {
   const username = useAppSelector((item) => item.user.username);
   const messages = useAppSelector((item) => item.room.messages);
 
-  useEffect(() => {
-    socket.on("chatMessage", (message: any) => {
-      dispatch(setMessages(message));
-    });
-
-    return () => {
-      socket.off("chatMessage");
-    };
-  }, []);
-
   const sendMessage = () => {
     if (message !== "") {
       socket.emit("chatMessage", { message, roomId, username });

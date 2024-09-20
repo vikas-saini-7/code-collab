@@ -26,6 +26,7 @@ const page: React.FC = () => {
   };
 
   const handleActiveFileChange = (file: any) => {
+    // console.log("Changing file: ", file);
     dispatch(changeActiveFile(file));
   };
 

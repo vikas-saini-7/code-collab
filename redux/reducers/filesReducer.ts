@@ -1,3 +1,4 @@
+import socket from "@/utils/socket";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import toast from "react-hot-toast";
 
@@ -50,6 +51,24 @@ const filesSlice = createSlice({
     changeCode: (state, action) => {
       console.log("Running", action.payload);
       state.activeFile.value = action.payload;
+    },
+
+    changeCodeInFile: (state, action) => {
+      // console.log(action.payload);
+      const { fileId, code } = action.payload;
+      console.log("From file reducer: ", fileId, code);
+      state.filesList = state.filesList.map((item) => {
+        if (item.id == fileId) {
+          return { ...item, value: code };
+        }
+        return item;
+      });
+
+      if (state.activeFile.id === fileId) {
+        state.activeFile.value = code;
+      }
+
+      console.log(state.filesList);
     },
 
     // changeActiveFile
@@ -124,6 +143,7 @@ const filesSlice = createSlice({
 
 export const {
   changeCode,
+  changeCodeInFile,
   changeActiveFile,
   createFile,
   saveFile,
