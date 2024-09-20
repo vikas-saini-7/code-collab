@@ -7,8 +7,16 @@ import { useAppDispatch, useAppSelector } from "@/redux/store";
 import { changeCode } from "@/redux/reducers/filesReducer";
 import socket from "@/utils/socket";
 import Tooltip from "./Tooltip";
+import { usePathname } from "next/navigation";
+import VideoContainer from "./VideoContainer";
 
 const CodeEditor: React.FC = () => {
+  // return video container component if path is video
+  const pathname = usePathname();
+  const endPart = pathname.split("/").pop();
+  if (endPart === "video") return <VideoContainer />;
+
+  // Main Component logic goes here
   const dispatch = useAppDispatch();
 
   // store
