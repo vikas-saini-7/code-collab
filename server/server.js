@@ -9,7 +9,10 @@ const server = http.createServer(app);
 // Enable CORS for all requests
 app.use(
   cors({
-    origin: "http://localhost:3000", // Allow requests from your Next.js frontend
+    origin: [
+      "http://localhost:3000",
+      "https://realtime-code-collab.vercel.app",
+    ], // Allow requests from your Next.js frontend and Vercel app
     methods: ["GET", "POST"],
     credentials: true,
   })
@@ -17,7 +20,10 @@ app.use(
 
 const io = socketIo(server, {
   cors: {
-    origin: "http://localhost:3000", // Allow the frontend origin
+    origin: [
+      "http://localhost:3000",
+      "https://realtime-code-collab.vercel.app",
+    ], // Allow the frontend origin
     methods: ["GET", "POST"],
     credentials: true,
   },
