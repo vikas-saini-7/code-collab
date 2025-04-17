@@ -8,7 +8,7 @@ const page: React.FC = () => {
 
   return (
     <div className="p-4">
-      <h1 className="mb-2">Active Users</h1>
+      <h1 className="mb-2">Collaborators</h1>
       <div className="grid grid-cols-3 gap-2">
         {activeUsers.map((item, idx) => (
           <div

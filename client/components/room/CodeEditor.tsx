@@ -9,6 +9,86 @@ import socket from "@/utils/socket";
 import Tooltip from "./Tooltip";
 import { usePathname } from "next/navigation";
 import VideoContainer from "./VideoContainer";
+import { createTheme } from "@uiw/codemirror-themes";
+import { tags as t } from "@lezer/highlight";
+
+const blackTheme = createTheme({
+  theme: "dark",
+  settings: {
+    background: "#111111",
+    foreground: "#e0e0e0",
+    caret: "#4f9eff",
+    selection: "#2a2a2a",
+    selectionMatch: "#2a2a2a",
+    lineHighlight: "#1a1a1a",
+    gutterBackground: "#111111",
+    gutterForeground: "#666666",
+    gutterBorder: "#1a1a1a",
+    // activeLine: "#1f1f1f",
+    // activeLineGutter: "#1f1f1f",
+    // matchingBracket: "#3d3d3d",
+    // highlightActiveLineGutter: true,
+  },
+  styles: [
+    // Basic syntax
+    { tag: [t.comment], color: "#666666", fontStyle: "italic" },
+    { tag: [t.lineComment], color: "#666666", fontStyle: "italic" },
+    { tag: [t.blockComment], color: "#666666", fontStyle: "italic" },
+    { tag: [t.docComment], color: "#7a8a8d", fontStyle: "italic" },
+
+    // Variables and identifiers
+    { tag: [t.variableName], color: "#4f9eff" },
+    { tag: [t.definition(t.variableName)], color: "#c78aff" },
+    { tag: [t.local(t.variableName)], color: "#59a6ff" },
+
+    // Functions
+    { tag: [t.function(t.variableName)], color: "#4f9eff", fontWeight: "bold" },
+    {
+      tag: [t.definition(t.function(t.variableName))],
+      color: "#4f9eff",
+      fontWeight: "bold",
+    },
+    // { tag: [t.functionKeyword], color: "#ff6b9f" },
+
+    // Classes and types
+    { tag: [t.className], color: "#54c8ff", fontWeight: "bold" },
+    { tag: [t.typeName], color: "#54c8ff" },
+    { tag: [t.typeOperator], color: "#ff6b9f" },
+    { tag: [t.propertyName], color: "#4f9eff" },
+
+    // Keywords and control flow
+    { tag: [t.keyword], color: "#ff6b9f", fontWeight: "bold" },
+    { tag: [t.controlKeyword], color: "#ff6b9f", fontWeight: "bold" },
+    { tag: [t.moduleKeyword], color: "#ff6b9f" },
+
+    // Literals
+    { tag: [t.string], color: "#6dd390" },
+    { tag: [t.number], color: "#ff9447" },
+    { tag: [t.bool], color: "#ff9447" },
+    { tag: [t.null], color: "#ff9447" },
+    { tag: [t.regexp], color: "#ff7e57" },
+
+    // Operators and syntax
+    { tag: [t.operator], color: "#54c8ff" },
+    { tag: [t.bracket], color: "#666666" },
+    { tag: [t.punctuation], color: "#666666" },
+    { tag: [t.derefOperator], color: "#54c8ff" },
+
+    // Special syntax
+    { tag: [t.meta], color: "#848484" },
+    { tag: [t.tagName], color: "#ff6b9f" },
+    { tag: [t.attributeName], color: "#4f9eff" },
+    { tag: [t.attributeValue], color: "#6dd390" },
+
+    // Markdown specific
+    { tag: [t.heading], color: "#ff6b9f", fontWeight: "bold" },
+    { tag: [t.quote], color: "#6dd390", fontStyle: "italic" },
+    { tag: [t.link], color: "#4f9eff", textDecoration: "underline" },
+
+    // Invalid code
+    { tag: [t.invalid], color: "#ff5555" },
+  ],
+});
 
 const CodeEditor: React.FC = () => {
   // return video container component if path is video
@@ -96,8 +176,10 @@ const CodeEditor: React.FC = () => {
         height="100%"
         extensions={[langs[language]()]}
         onChange={handleCodeChange}
-        theme={dracula}
-        style={{ fontSize: `${fontSize}px` }}
+        theme={blackTheme}
+        style={{
+          fontSize: `${fontSize}px`,
+        }}
       />
       {tooltip.position && tooltip.text !== "" && (
         <Tooltip text={tooltip.text} position={tooltip.position} />

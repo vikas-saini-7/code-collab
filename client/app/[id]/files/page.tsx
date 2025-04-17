@@ -8,6 +8,7 @@ import {
   fileDelete,
   saveFile,
 } from "@/redux/reducers/filesReducer";
+import { Button } from "@/components/ui/button";
 
 const page: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -118,12 +119,12 @@ const page: React.FC = () => {
 
       {/* bottom actions  */}
       <div>
-        <button
+        <Button
           onClick={handleFileSave}
-          className={`w-full mb-2 h-9 rounded bg-purple-400 hover:bg-purple-500 font-bold text-md text-black`}
+          className={`bg-[#00E87B] w-full font-bold`}
         >
           Save File
-        </button>
+        </Button>
       </div>
     </div>
   );

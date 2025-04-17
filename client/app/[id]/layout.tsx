@@ -52,13 +52,13 @@ export default function layout({ children }: { children: ReactNode }) {
   return (
     <div className="max-w-[1680px] mx-auto flex w-full h-screen">
       {/* sidebar  */}
-      <div className="w-[320px]">
-        <div className="flex h-screen bg-[#181926]">
+      <div className="w-[320px] lg:w-[400px]">
+        <div className="flex h-screen">
           {/* features list  */}
           <SideBar />
 
           {/* feature body  */}
-          <div className="w-full bg-[#1f2130]">{children}</div>
+          <div className="w-full border-r">{children}</div>
         </div>
       </div>
 

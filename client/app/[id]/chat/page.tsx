@@ -3,6 +3,8 @@ import React, { useEffect, useRef, useState } from "react";
 import socket from "@/utils/socket";
 import { setMessages } from "@/redux/reducers/roomReducer";
 import { useAppDispatch, useAppSelector } from "@/redux/store";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 const page: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -52,21 +54,18 @@ const page: React.FC = () => {
         ))}
       </div>
       <div className="flex gap-2 flex-col">
-        <input
+        <Input
           ref={inputRef}
           type="text"
-          className="h-8 rounded px-3 text-black"
+          className="rounded"
           placeholder="Enter Message"
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           onKeyDown={handleEnterPress}
         />
-        <button
-          className="w-full h-8 rounded bg-purple-400 hover:bg-purple-500 font-bold text-md text-black"
-          onClick={sendMessage}
-        >
+        <Button className="bg-[#00E87B] w-full font-bold" onClick={sendMessage}>
           Send
-        </button>
+        </Button>
       </div>
     </div>
   );

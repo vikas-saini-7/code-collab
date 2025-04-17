@@ -1,26 +1,32 @@
 "use client";
-import React, { useState } from "react";
+import React from "react";
 import { langs } from "@uiw/codemirror-extensions-langs";
 import { useAppDispatch, useAppSelector } from "@/redux/store";
 import {
   changeFontSize,
   changeLanguage,
 } from "@/redux/reducers/settingsReducer";
-import Link from "next/link";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 type LangsType = typeof langs;
 
 const page: React.FC = () => {
   const dispatch = useAppDispatch();
 
-  // store
   const fontSize = useAppSelector((item) => item.settings.fontSize);
   const language = useAppSelector((item) => item.settings.language);
   const theme = useAppSelector((item) => item.settings.theme);
   const username = useAppSelector((item) => item.user.username);
   const roomId = useAppSelector((item) => item.room.roomId);
 
-  // handlers
   const handleFontSizeChange = (size: number) => {
     dispatch(changeFontSize(size));
   };
@@ -28,66 +34,48 @@ const page: React.FC = () => {
   const handleSave = () => {};
 
   return (
-    <div className="p-4 space-y-4">
-      {/* language  */}
-      <div className="">
-        <h2>language: </h2>
-        <select
-          className="p-1 text-black w-full"
+    <div className="container mx-auto max-w-md p-6 space-y-8">
+      <h1 className="text-2xl font-bold mb-6">Editor Settings</h1>
+
+      <div className="space-y-2">
+        <label className="text-sm font-medium">Language</label>
+        <Select
           value={language}
-          onChange={(e) =>
-            dispatch(changeLanguage(e.target.value as keyof LangsType))
+          onValueChange={(value) =>
+            dispatch(changeLanguage(value as keyof LangsType))
           }
         >
-          {Object.keys(langs).map((lang) => (
-            <option key={lang} value={lang}>
-              {lang}
-            </option>
-          ))}
-        </select>
+          <SelectTrigger className="w-full">
+            <SelectValue placeholder="Select language" />
+          </SelectTrigger>
+          <SelectContent>
+            {Object.keys(langs).map((lang) => (
+              <SelectItem key={lang} value={lang}>
+                {lang}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
 
-      {/* font size  */}
-      <div className="mb-4">
-        <h2>font size: </h2>
-        <input
+      <div className="space-y-2">
+        <label className="text-sm font-medium">Font Size</label>
+        <Input
+          type="number"
+          value={fontSize}
           onChange={(e) => handleFontSizeChange(parseInt(e.target.value))}
-          defaultValue={fontSize}
-          className="w-full h-8 px-3 text-black"
-          type="text"
+          className="w-full"
+          min={8}
+          max={32}
         />
       </div>
 
-      {/* theme: coming soon  */}
-      {/* <div className="">
-        <h2>Theme: </h2>
-        <select
-          className="p-1 text-black w-full"
-          value={theme}
-          onChange={(e) =>
-            dispatch(changeLanguage(e.target.value as keyof LangsType))
-          }
-        >
-          {Object.keys(langs).map((lang) => (
-            <option key={lang} value={lang}>
-              {lang}
-            </option>
-          ))}
-        </select>
-      </div> */}
-
-      {/* save button  */}
-      <button
+      <Button
         onClick={handleSave}
-        className="w-full h-9 rounded bg-purple-400 hover:bg-purple-500 font-bold text-md text-black"
+        className="w-full bg-[#00E87B] hover:bg-[#00E87B]/90 font-bold mt-4"
       >
         Save & Exit
-      </button>
-
-      <div>
-        <p>Name: {username}</p>
-        <p>Room: {roomId}</p>
-      </div>
+      </Button>
     </div>
   );
 };

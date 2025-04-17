@@ -10,7 +10,7 @@ const server = http.createServer(app);
 app.use(
   cors({
     origin: [
-      "http://localhost:3000",
+      "http://localhost:3001",
       "https://realtime-code-collab.vercel.app",
     ], // Allow requests from your Next.js frontend and Vercel app
     methods: ["GET", "POST"],
