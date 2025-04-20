@@ -60,7 +60,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${redHatMono.variable} ${bricolageGrotesque.variable} ${antonSC.variable} antialiased dark`}
+        className={`${geistSans.variable} ${geistMono.variable} ${redHatMono.variable} ${bricolageGrotesque.variable} ${antonSC.variable} antialiased dark min-h-screen`}
       >
         <GlobalProvider>{children}</GlobalProvider>
       </body>
