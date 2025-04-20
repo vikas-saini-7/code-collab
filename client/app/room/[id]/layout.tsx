@@ -2,13 +2,10 @@
 import React, { useEffect } from "react";
 import { ReactNode } from "react";
 import { useAppDispatch, useAppSelector } from "@/redux/store";
-// import { useRouter } from "next/navigation";
 import socket from "@/utils/socket";
 import { setUsername } from "@/redux/reducers/userReducer";
-// import { useRouter } from "next/router";
 import { setRoomId } from "@/redux/reducers/roomReducer";
 import { usePathname } from "next/navigation";
-import toast from "react-hot-toast";
 import useSocket from "@/utils/useSocket";
 import SideBar from "@/components/room/SideBar";
 import CodeEditor from "@/components/room/CodeEditor";

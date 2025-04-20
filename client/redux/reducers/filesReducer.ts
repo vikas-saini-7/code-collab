@@ -1,6 +1,6 @@
 import socket from "@/utils/socket";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import toast from "react-hot-toast";
+import { toast } from "sonner";
 
 interface IFile {
   id: number;
