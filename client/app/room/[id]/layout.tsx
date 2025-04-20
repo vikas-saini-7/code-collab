@@ -1,8 +1,6 @@
 "use client";
 import React, { useEffect } from "react";
 import { ReactNode } from "react";
-import CodeEditor from "../../components/room/CodeEditor";
-import SideBar from "../../components/room/SideBar";
 import { useAppDispatch, useAppSelector } from "@/redux/store";
 // import { useRouter } from "next/navigation";
 import socket from "@/utils/socket";
@@ -12,6 +10,8 @@ import { setRoomId } from "@/redux/reducers/roomReducer";
 import { usePathname } from "next/navigation";
 import toast from "react-hot-toast";
 import useSocket from "@/utils/useSocket";
+import SideBar from "@/components/room/SideBar";
+import CodeEditor from "@/components/room/CodeEditor";
 
 export default function layout({ children }: { children: ReactNode }) {
   const pathname = usePathname();

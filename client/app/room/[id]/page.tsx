@@ -6,8 +6,8 @@ const page: React.FC = () => {
   const pathname = usePathname();
   const router = useRouter();
   useEffect(() => {
-    const roomIdFromUrl = pathname.split("/")[1];
-    router.push("/" + roomIdFromUrl + "/files");
+    const roomIdFromUrl = pathname.split("/")[2];
+    router.push("/room/" + roomIdFromUrl + "/files");
   }, []);
   return <></>;
 };

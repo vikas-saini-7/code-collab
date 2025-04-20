@@ -52,7 +52,7 @@ const SideBar = () => {
   };
 
   return (
-    <aside className="flex h-screen w-16 flex-col items-center border-r bg-background px-3 py-4 bg-[#161616]">
+    <aside className="flex h-screen w-16 flex-col items-center border-r px-3 py-4 bg-[#171717]">
       <nav className="flex flex-1 flex-col items-center gap-3">
         {navItems.map(({ href, icon: Icon, label }) => {
           const isActive = pathname?.includes(href);
