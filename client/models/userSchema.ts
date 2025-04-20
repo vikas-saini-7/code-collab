@@ -5,16 +5,7 @@ interface IUser {
   username?: string;
   email: string;
   password: string;
-  role?: {
-    type:
-      | "Frontend Dev"
-      | "Backend Dev"
-      | "Full Stack"
-      | "DevOps"
-      | "Student"
-      | "Other";
-    custom?: string;
-  };
+  role?: string;
   experienceLevel?: "Beginner" | "Intermediate" | "Advanced";
   bio?: string;
   profilePicture?: string;
@@ -31,6 +22,7 @@ const UserSchema = new mongoose.Schema<IUser>(
     },
     username: {
       type: String,
+      default: "",
     },
     email: {
       type: String,
@@ -42,23 +34,8 @@ const UserSchema = new mongoose.Schema<IUser>(
       required: true,
     },
     role: {
-      type: {
-        type: String,
-        enum: [
-          "Frontend Dev",
-          "Backend Dev",
-          "Full Stack",
-          "DevOps",
-          "Student",
-          "Other",
-        ],
-      },
-      custom: {
-        type: String,
-        required: function (this: IUser) {
-          return this.role?.type === "Other";
-        },
-      },
+      type: String,
+      default: "",
     },
     experienceLevel: {
       type: String,

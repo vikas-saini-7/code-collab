@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
-import GlobalProvider from "../components/providers/globalProvider";
+import GlobalProvider from "../providers/globalProvider";
 import "./globals.css";
 
 export const metadata: Metadata = {

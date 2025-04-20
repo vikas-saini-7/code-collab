@@ -4,9 +4,9 @@ import { useDispatch } from "react-redux";
 import io from "socket.io-client";
 import socket from "./socket";
 import { setActiveUsers, setMessages } from "@/redux/reducers/roomReducer";
-import toast from "react-hot-toast";
 import { useAppDispatch } from "@/redux/store";
 import { changeCodeInFile } from "@/redux/reducers/filesReducer";
+import { toast } from "sonner";
 
 const useSocket = () => {
   const dispatch = useAppDispatch();

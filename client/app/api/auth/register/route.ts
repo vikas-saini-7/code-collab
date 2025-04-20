@@ -6,9 +6,17 @@ import { NextRequest, NextResponse } from "next/server";
 export async function POST(req: NextRequest) {
   try {
     await connectDB();
-    const body = await req.json();
+    const { email, password, fullName } = await req.json();
 
-    const existingUser = await User.findOne({ email: body.email });
+    // Validate required fields
+    if (!email || !password || !fullName) {
+      return NextResponse.json(
+        { message: "All fields are required" },
+        { status: 400 }
+      );
+    }
+
+    const existingUser = await User.findOne({ email });
     if (existingUser) {
       return NextResponse.json(
         { message: "User already exists" },
@@ -17,12 +25,12 @@ export async function POST(req: NextRequest) {
     }
 
     const salt = await bcrypt.genSalt(10);
-    const hash = await bcrypt.hash(body.password, salt);
+    const hashedPassword = await bcrypt.hash(password, salt);
 
     const newUser = new User({
-      fullName: body.fullName,
-      email: body.email,
-      password: hash,
+      fullName,
+      email,
+      password: hashedPassword,
     });
 
     await newUser.save();
