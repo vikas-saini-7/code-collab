@@ -1,4 +1,3 @@
-import toast from "react-hot-toast";
 import { io } from "socket.io-client";
 
 const backendUrl = "https://realtime-code-collab.up.railway.app";
