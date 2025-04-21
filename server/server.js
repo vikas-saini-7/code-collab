@@ -4,19 +4,30 @@ const http = require("http");
 const cors = require("cors"); // Import CORS
 const socketIo = require("socket.io");
 const app = express();
+const apiRoutes = require("./routes/api.js");
 const server = http.createServer(app);
+const connectDB = require("./utils/connectDB.js");
 
-// Enable CORS for all requests
+// Enable CORS for required origins
 app.use(
   cors({
     origin: [
-      "http://localhost:3001",
+      "http://localhost:3000",
       "https://realtime-code-collab.vercel.app",
-    ], // Allow requests from your Next.js frontend and Vercel app
+    ],
     methods: ["GET", "POST"],
     credentials: true,
   })
 );
+
+app.use(express.json());
+
+// MOUNT /api global routes
+app.use("/api", apiRoutes);
+
+// =======================
+// SOCKET.IO
+// =======================
 
 const io = socketIo(server, {
   cors: {
@@ -28,8 +39,6 @@ const io = socketIo(server, {
     credentials: true,
   },
 });
-
-// =======================
 
 let activeUsers = {};
 let roomUsers = {}; // Mapping of roomId to list of users in that room
@@ -96,6 +105,7 @@ io.on("connection", (socket) => {
 // ==========================
 
 const port = process.env.PORT || 9000;
+connectDB();
 server.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });

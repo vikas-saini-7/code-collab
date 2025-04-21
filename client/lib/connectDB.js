@@ -14,17 +14,12 @@ async function connectDB() {
 
   if (!cached.promise) {
     const mongoUriWithDb = `${MONGO_URI}/${DB_NAME}`;
-    cached.promise = mongoose
-      .connect(mongoUriWithDb, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-      })
-      .then((mongoose) => {
-        console.log(
-          `Connected to MongoDB database: ${DB_NAME} in ${process.env.NODE_ENV} mode`
-        );
-        return mongoose;
-      });
+    cached.promise = mongoose.connect(mongoUriWithDb).then((mongoose) => {
+      console.log(
+        `Connected to MongoDB database: ${DB_NAME} in ${process.env.NODE_ENV} mode`
+      );
+      return mongoose;
+    });
   }
 
   cached.conn = await cached.promise;
