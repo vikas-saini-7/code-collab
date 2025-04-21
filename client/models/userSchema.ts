@@ -10,6 +10,7 @@ interface IUser {
   bio?: string;
   profilePicture?: string;
   isOnboarded: boolean;
+  isPublic: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -23,6 +24,7 @@ const UserSchema = new mongoose.Schema<IUser>(
     username: {
       type: String,
       default: "",
+      unique: true,
     },
     email: {
       type: String,
@@ -51,6 +53,10 @@ const UserSchema = new mongoose.Schema<IUser>(
       default: "",
     },
     isOnboarded: {
+      type: Boolean,
+      default: false,
+    },
+    isPublic: {
       type: Boolean,
       default: false,
     },

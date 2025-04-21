@@ -8,10 +8,12 @@ import { SessionProvider, useSession } from "next-auth/react";
 import { useDispatch } from "react-redux";
 import axios from "axios";
 import { setProfile } from "@/redux/reducers/profileReducer";
+import { useRouter } from "next/navigation";
 
 // Inner component to handle data fetching
 const DataProvider = ({ children }: { children: React.ReactNode }) => {
   const dispatch = useDispatch();
+  const router = useRouter();
   const { data: session, status } = useSession();
 
   useEffect(() => {
@@ -21,6 +23,9 @@ const DataProvider = ({ children }: { children: React.ReactNode }) => {
           const response = await axios.get("/api/profile");
           console.log("User data:", response.data.data);
           dispatch(setProfile(response.data.data));
+          if (!response.data.data.isOnboarded) {
+            router.push("/onboard");
+          }
         } catch (error) {
           console.error("Failed to fetch user:", error);
         }
