@@ -1,6 +1,7 @@
 require("dotenv").config();
 const express = require("express");
 const http = require("http");
+const cookieParser = require("cookie-parser");
 const cors = require("cors"); // Import CORS
 const socketIo = require("socket.io");
 const app = express();
@@ -21,6 +22,8 @@ app.use(
 );
 
 app.use(express.json());
+
+app.use(cookieParser());
 
 // MOUNT /api global routes
 app.use("/api", apiRoutes);

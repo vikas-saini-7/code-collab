@@ -2,6 +2,8 @@ const Room = require("../models/room.model.js");
 
 exports.createRoom = async (req, res) => {
   try {
+    const userId = req.userId;
+    const host = userId;
     const {
       name,
       type,
@@ -9,13 +11,12 @@ exports.createRoom = async (req, res) => {
       maxParticipants,
       scheduledAt,
       timeZone,
-      host,
       configuration,
       permissions,
     } = req.body;
 
     // Validate required fields
-    if (!name || !host) {
+    if (!name || !host || !type) {
       return res.status(400).json({
         success: false,
         message: "Room name and host are required",
@@ -25,7 +26,7 @@ exports.createRoom = async (req, res) => {
     // Create room object with provided data
     const roomData = {
       name,
-      type: type || "instant",
+      type: type,
       description,
       maxParticipants,
       host,
@@ -78,7 +79,7 @@ exports.endRoom = async (req, res) => {
   try {
     const { roomId } = req.body;
 
-    const userId = req.user._id;
+    const userId = req.userId;
 
     // Validate required fields
     if (!roomId) {
@@ -126,7 +127,7 @@ exports.joinRoom = async (req, res) => {
   try {
     const { roomId } = req.body;
 
-    const userId = "64a82d1234567890abcdef12";
+    const userId = req.userId;
 
     // Validate required fields
     if (!roomId || !userId) {
@@ -180,7 +181,7 @@ exports.leaveRoom = async (req, res) => {
   try {
     const { roomId } = req.body;
 
-    const userId = req.user._id;
+    const userId = req.userId;
 
     // Validate required fields
     if (!roomId || !userId) {
@@ -231,7 +232,7 @@ exports.leaveRoom = async (req, res) => {
 
 exports.getActiveRooms = async (req, res) => {
   try {
-    const { userId } = req.user._id;
+    const userId = req.userId;
 
     // Validate required fields
     if (!userId) {
@@ -262,7 +263,7 @@ exports.getActiveRooms = async (req, res) => {
 
 exports.getScheduledRooms = async (req, res) => {
   try {
-    const { userId } = req.user._id;
+    const userId = req.userId;
 
     // Validate required fields
     if (!userId) {
@@ -293,7 +294,7 @@ exports.getScheduledRooms = async (req, res) => {
 
 exports.getPreviousRooms = async (req, res) => {
   try {
-    const { userId } = req.user._id;
+    const userId = req.userId;
 
     // Validate required fields
     if (!userId) {
@@ -325,7 +326,6 @@ exports.getPreviousRooms = async (req, res) => {
 exports.getAllRooms = async (req, res) => {
   try {
     const rooms = await Room.find({});
-    // .populate("host", "name email");
 
     res.status(200).json({
       success: true,

@@ -14,6 +14,7 @@ import {
   IconMapPin,
 } from "@tabler/icons-react";
 import { format } from "date-fns";
+import ActiveRooms from "@/components/profile/ActiveRooms";
 
 const ProfilePage = () => {
   const profile = useSelector((state: RootState) => state.profile);
@@ -112,7 +113,7 @@ const ProfilePage = () => {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
               <InfoCard
                 icon={<IconMail size={20} />}
                 label="Email"
@@ -135,6 +136,7 @@ const ProfilePage = () => {
                 value={formatDate(profile.updatedAt)}
               />
             </div>
+            <ActiveRooms />
           </div>
         </div>
       </main>

@@ -5,6 +5,8 @@ import bcrypt from "bcryptjs";
 import type { NextAuthOptions } from "next-auth";
 import connectDB from "@/lib/connectDB";
 import User from "@/models/userSchema";
+// import jwt from "jsonwebtoken";
+// import { cookies } from "next/headers";
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -38,6 +40,9 @@ export const authOptions: NextAuthOptions = {
           if (!isValid) {
             throw new Error("Invalid password");
           }
+
+          // send req to /api/auth/set-token
+          
 
           return {
             id: user._id.toString(),

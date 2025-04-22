@@ -1,19 +1,20 @@
 const express = require("express");
 const router = express.Router();
 const RoomController = require("../controllers/room.controller.js");
+const authenticate = require("../middlewares/authenticate.js");
 
 // host specific endpoints
-router.post("/", RoomController.createRoom);
-router.post("/end", RoomController.endRoom);
+router.post("/", authenticate, RoomController.createRoom);
+router.post("/end", authenticate, RoomController.endRoom);
 
 // participant specific endpoints
-router.post("/join", RoomController.joinRoom);
-router.post("/leave", RoomController.leaveRoom);
+router.post("/join", authenticate, RoomController.joinRoom);
+router.post("/leave", authenticate, RoomController.leaveRoom);
 
 // profile specific endpoints
-router.get("/active-rooms", RoomController.getActiveRooms);
-router.get("/scheduled-rooms", RoomController.getScheduledRooms);
-router.get("/previous-rooms", RoomController.getPreviousRooms);
+router.get("/active-rooms", authenticate, RoomController.getActiveRooms);
+router.get("/scheduled-rooms", authenticate, RoomController.getScheduledRooms);
+router.get("/previous-rooms", authenticate, RoomController.getPreviousRooms);
 
 router.get("/", RoomController.getAllRooms); // testing purpose
 
