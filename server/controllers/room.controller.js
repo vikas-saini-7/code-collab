@@ -227,6 +227,101 @@ exports.leaveRoom = async (req, res) => {
   }
 };
 
+// get active rooms by host
+
+exports.getActiveRooms = async (req, res) => {
+  try {
+    const { userId } = req.user._id;
+
+    // Validate required fields
+    if (!userId) {
+      return res.status(400).json({
+        success: false,
+        message: "User ID is required",
+      });
+    }
+
+    // Find active rooms by host
+    const activeRooms = await Room.find({
+      host: userId,
+      status: "active",
+    });
+
+    res.status(200).json({
+      success: true,
+      data: activeRooms,
+    });
+  } catch (error) {
+    console.error("Error fetching active rooms:", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal server error.",
+    });
+  }
+};
+
+exports.getScheduledRooms = async (req, res) => {
+  try {
+    const { userId } = req.user._id;
+
+    // Validate required fields
+    if (!userId) {
+      return res.status(400).json({
+        success: false,
+        message: "User ID is required",
+      });
+    }
+
+    // Find scheduled rooms by host
+    const scheduledRooms = await Room.find({
+      host: userId,
+      status: "scheduled",
+    });
+
+    res.status(200).json({
+      success: true,
+      data: scheduledRooms,
+    });
+  } catch (error) {
+    console.error("Error fetching scheduled rooms:", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal server error.",
+    });
+  }
+};
+
+exports.getPreviousRooms = async (req, res) => {
+  try {
+    const { userId } = req.user._id;
+
+    // Validate required fields
+    if (!userId) {
+      return res.status(400).json({
+        success: false,
+        message: "User ID is required",
+      });
+    }
+
+    // Find completed rooms by host
+    const previousRooms = await Room.find({
+      host: userId,
+      status: "completed",
+    });
+
+    res.status(200).json({
+      success: true,
+      data: previousRooms,
+    });
+  } catch (error) {
+    console.error("Error fetching previous rooms:", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal server error.",
+    });
+  }
+};
+
 exports.getAllRooms = async (req, res) => {
   try {
     const rooms = await Room.find({});
