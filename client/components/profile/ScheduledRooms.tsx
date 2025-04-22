@@ -17,7 +17,7 @@ interface Room {
   // Add other room properties as needed
 }
 
-const ActiveRooms = () => {
+const ScheduledRooms = () => {
   const [rooms, setRooms] = useState<Room[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   // const [error, setError] = useState<string | null>(null);
@@ -26,15 +26,15 @@ const ActiveRooms = () => {
     try {
       setLoading(true);
       const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/room/active-rooms`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/room/scheduled-rooms`,
         { withCredentials: true }
       );
       setRooms(response.data.data);
-      console.log("Active rooms:", response.data.data);
+      console.log("Scheduled rooms:", response.data.data);
       // setError(null);
     } catch (err) {
       console.error("Error fetching rooms:", err);
-      // setError("Failed to load active rooms");
+      // setError("Failed to load Scheduled rooms");
     } finally {
       setLoading(false);
     }
@@ -57,8 +57,8 @@ const ActiveRooms = () => {
   return (
     <div className="bg-zinc-800/30 backdrop-blur-sm rounded-xl p-5 hover:bg-zinc-800/40 transition-all border border-zinc-800 w-1/2 shadow-lg">
       <h2 className="text-xl font-semibold mb-4 flex items-center">
-        <span className="text-[#00E87B] mr-2">●</span>
-        Active Rooms
+        <span className="text-[#ff8b32] mr-2">●</span>
+        Scheduled Rooms
       </h2>
 
       {loading ? (
@@ -66,7 +66,9 @@ const ActiveRooms = () => {
           <div className="w-6 h-6 border-2 border-[#00E87B] border-t-transparent rounded-full animate-spin"></div>
         </div>
       ) : rooms.length === 0 ? (
-        <p className="text-zinc-400 py-6 text-center">No active rooms found</p>
+        <p className="text-zinc-400 py-6 text-center">
+          No Scheduled rooms found
+        </p>
       ) : (
         <div className="space-y-4">
           {rooms.map((room) => (
@@ -102,4 +104,4 @@ const ActiveRooms = () => {
   );
 };
 
-export default ActiveRooms;
+export default ScheduledRooms;

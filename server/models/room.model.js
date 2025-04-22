@@ -55,7 +55,7 @@ const roomSchema = new Schema(
       codeEdit: {
         type: String,
         enum: ["all", "host", "selected"],
-        default: "all",
+        default: "host",
       },
       allowedEditors: [
         {

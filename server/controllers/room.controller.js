@@ -11,8 +11,8 @@ exports.createRoom = async (req, res) => {
       maxParticipants,
       scheduledAt,
       timeZone,
-      configuration,
-      permissions,
+      // configuration,
+      // permissions,
     } = req.body;
 
     // Validate required fields
@@ -30,13 +30,6 @@ exports.createRoom = async (req, res) => {
       description,
       maxParticipants,
       host,
-      configuration: {
-        chatEnabled: configuration?.chatEnabled ?? true,
-      },
-      permissions: {
-        codeEdit: permissions?.codeEdit || "all",
-        allowedEditors: permissions?.allowedEditors || [],
-      },
     };
 
     // Add scheduled room specific fields if type is scheduled

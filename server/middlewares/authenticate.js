@@ -18,7 +18,7 @@ const authenticate = async (req, res, next) => {
     // Verify the token
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    console.log("decoded", decoded);
+    // console.log("decoded", decoded);
 
     // Attach user ID to request object
     req.userId = decoded._id;

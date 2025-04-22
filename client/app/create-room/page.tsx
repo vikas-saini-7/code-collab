@@ -1,4 +1,5 @@
 "use client";
+
 import { useState } from "react";
 import { useAppDispatch } from "@/redux/store";
 import { setRoomId } from "@/redux/reducers/roomReducer";
@@ -22,6 +23,11 @@ import {
 } from "@/components/ui/popover";
 import { CalendarIcon, ClockIcon } from "lucide-react";
 import { format } from "date-fns";
+import axios from "axios";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { IconChevronCompactDown, IconChevronDown } from "@tabler/icons-react";
 
 const RoomForm = () => {
   const router = useRouter();
@@ -29,11 +35,13 @@ const RoomForm = () => {
   const [roomType, setRoomType] = useState<"instant" | "scheduled">("instant");
   const [date, setDate] = useState<Date>();
   const [time, setTime] = useState<string>("");
+  const [name, setName] = useState<string>("");
+  const [description, setDescription] = useState<string>("");
+  const [maxParticipants, setMaxParticipants] = useState<number>(10);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const generateRandomRoomId = () => {
-    const generateSegment = () => Math.random().toString(36).substring(2, 5);
-    return `${generateSegment()}-${generateSegment()}-${generateSegment()}`;
-  };
+  const [adSetVisible, setAdSetVisible] = useState(false);
 
   const hours = Array.from({ length: 24 }, (_, i) =>
     i.toString().padStart(2, "0")
@@ -42,28 +50,76 @@ const RoomForm = () => {
     i.toString().padStart(2, "0")
   );
 
-  const handleCreateRoom = () => {
-    if (roomType === "instant") {
-      const roomId = generateRandomRoomId();
-      dispatch(setRoomId(roomId));
-      router.push(`/room/${roomId}/files`);
-    } else {
-      if (!date || !time) return;
-      // Here you can implement scheduled room creation logic
-      // For now, we'll just create the room and store the schedule
-      const roomId = generateRandomRoomId();
-      const scheduledTime = new Date(date);
-      const [hours, minutes] = time.split(":");
-      scheduledTime.setHours(parseInt(hours), parseInt(minutes));
+  // Add this type definition at the top of your file, after imports
+  interface IRoomData {
+    name: string;
+    type: "instant" | "scheduled";
+    description: string;
+    maxParticipants: number;
+    scheduledAt?: string;
+  }
 
-      // You can store this scheduled room info in your backend
-      console.log("Scheduled room:", {
-        roomId,
-        scheduledTime: scheduledTime.toISOString(),
-      });
+  const createRoomOnServer = async () => {
+    try {
+      // Prepare room data based on form state
+      const roomData: IRoomData = {
+        name: name || "Untitled Room",
+        type: roomType,
+        description: description,
+        maxParticipants: maxParticipants,
+        // configuration: {
+        //   chatEnabled: true,
+        // },
+        // permissions: {
+        //   codeEdit: "host",
+        //   allowedEditors: [],
+        // },
+      };
 
-      dispatch(setRoomId(roomId));
-      router.push(`/room/${roomId}/files`);
+      // Add scheduled room specific fields if type is scheduled
+      if (roomType === "scheduled" && date && time) {
+        const scheduledTime = new Date(date);
+        const [hours, minutes] = time.split(":");
+        scheduledTime.setHours(parseInt(hours), parseInt(minutes));
+
+        roomData.scheduledAt = scheduledTime.toISOString();
+      }
+
+      console.log(roomData);
+      // return;
+
+      // Make the POST request to create the room
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/room`,
+        roomData,
+        { withCredentials: true }
+      );
+
+      console.log("Room created successfully:", response.data);
+      return response.data.data._id; // Return server generated ID
+    } catch (err) {
+      console.error("Error creating room:", err);
+      throw new Error("Failed to create room on server");
+    }
+  };
+
+  const handleCreateRoom = async () => {
+    try {
+      setIsSubmitting(true);
+      setError(null);
+
+      // Create room on server and get the server-generated ID
+      const serverRoomId = await createRoomOnServer();
+      return;
+
+      // Update redux state and navigate
+      dispatch(setRoomId(serverRoomId));
+      router.push(`/room/${serverRoomId}/files`);
+    } catch (error) {
+      console.error("Failed to create room:", error);
+      setError("Failed to create room. Please try again.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -73,30 +129,45 @@ const RoomForm = () => {
         <CardTitle className="text-2xl font-bold">Create a Room</CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
-        <div className="space-y-2">
-          <Select
-            value={roomType}
-            onValueChange={(value: "instant" | "scheduled") =>
-              setRoomType(value)
-            }
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="Select room type" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="instant">Instant Room</SelectItem>
-              <SelectItem value="scheduled">Scheduled Room</SelectItem>
-            </SelectContent>
-          </Select>
+        <div className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="name">Room Name (optional)</Label>
+            <Input
+              id="name"
+              placeholder="Enter room name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="bg-[#2A2A2A] border-[#3A3A3A]"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label>Room Type</Label>
+            <Select
+              value={roomType}
+              onValueChange={(value: "instant" | "scheduled") =>
+                setRoomType(value)
+              }
+            >
+              <SelectTrigger className="bg-[#2A2A2A] border-[#3A3A3A]">
+                <SelectValue placeholder="Select room type" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="instant">Instant Room</SelectItem>
+                <SelectItem value="scheduled">Scheduled Room</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
         </div>
 
         {roomType === "scheduled" && (
           <div className="space-y-4">
+            <Label>Schedule Date & Time</Label>
             <Popover>
               <PopoverTrigger asChild>
                 <Button
                   variant="outline"
-                  className="w-full justify-start text-left font-normal bg-transparent"
+                  className="w-full justify-start text-left font-normal bg-[#2A2A2A] border-[#3A3A3A]"
                 >
                   <CalendarIcon className="mr-2 h-4 w-4" />
                   {date ? format(date, "PPP") : "Pick a date"}
@@ -125,7 +196,7 @@ const RoomForm = () => {
                   setTime(`${hour}:${min || "00"}`);
                 }}
               >
-                <SelectTrigger className="w-[110px]">
+                <SelectTrigger className="w-[110px] bg-[#2A2A2A] border-[#3A3A3A]">
                   <SelectValue placeholder="Hour">
                     <div className="flex items-center">
                       <ClockIcon className="mr-2 h-4 w-4" />
@@ -151,7 +222,7 @@ const RoomForm = () => {
                   setTime(`${hour || "00"}:${minute}`);
                 }}
               >
-                <SelectTrigger className="w-[110px]">
+                <SelectTrigger className="w-[110px] bg-[#2A2A2A] border-[#3A3A3A]">
                   <SelectValue placeholder="Minute">
                     {time.split(":")[1] || "Minute"}
                   </SelectValue>
@@ -168,13 +239,77 @@ const RoomForm = () => {
           </div>
         )}
 
+        {adSetVisible && (
+          <>
+            <div className="space-y-2">
+              <Label htmlFor="description">Description (optional)</Label>
+              <Textarea
+                id="description"
+                placeholder="Describe the purpose of this room"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                className="bg-[#2A2A2A] border-[#3A3A3A]"
+                rows={3}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="maxParticipants">Max Participants (max 50)</Label>
+              <Input
+                id="maxParticipants"
+                type="number"
+                min={2}
+                max={50}
+                value={maxParticipants}
+                onChange={(e) => setMaxParticipants(parseInt(e.target.value))}
+                className="bg-[#2A2A2A] border-[#3A3A3A]"
+              />
+            </div>
+          </>
+        )}
+
+        {/* advanced Settings toggler  */}
+        <div className="flex items-center gap-2 text-sm text-white/50 cursor-pointer hover:text-[#00E87B] transition-all duration-300 w-fit">
+          <div
+            className="flex items-center"
+            onClick={() => setAdSetVisible((prev) => !prev)}
+          >
+            {/* {adSetVisible ? <span>Hide </span> : <span>Show </span>}&nbsp; */}
+            {/* <IconChevronDown
+              size={18}
+              className={`transition-transform duration-300 ${
+                adSetVisible ? "rotate-180" : ""
+              }`}
+            /> */}
+            Advanced Settings
+            <IconChevronDown
+              size={16}
+              className={`transition-transform duration-300 ${
+                adSetVisible ? "rotate-180" : ""
+              }`}
+            />
+          </div>
+        </div>
+
+        {error && <p className="text-red-500 text-sm">{error}</p>}
+
         <Button
           className="w-full bg-[#00E87B] hover:bg-[#00c666] text-black font-medium transition-all duration-300"
           onClick={handleCreateRoom}
           size="lg"
-          disabled={roomType === "scheduled" && (!date || !time)}
+          disabled={
+            (roomType === "scheduled" && (!date || !time)) || isSubmitting
+          }
         >
-          {roomType === "instant" ? "Create Instant Room" : "Schedule Room"}
+          {isSubmitting ? (
+            <span className="flex items-center gap-2">
+              <LoadingSpinner /> Creating...
+            </span>
+          ) : roomType === "instant" ? (
+            "Create Instant Room"
+          ) : (
+            "Schedule Room"
+          )}
         </Button>
       </CardContent>
     </Card>

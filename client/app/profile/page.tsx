@@ -15,6 +15,7 @@ import {
 } from "@tabler/icons-react";
 import { format } from "date-fns";
 import ActiveRooms from "@/components/profile/ActiveRooms";
+import ScheduledRooms from "@/components/profile/ScheduledRooms";
 
 const ProfilePage = () => {
   const profile = useSelector((state: RootState) => state.profile);
@@ -136,7 +137,11 @@ const ProfilePage = () => {
                 value={formatDate(profile.updatedAt)}
               />
             </div>
-            <ActiveRooms />
+            <div className="mb-6 flex gap-4">
+              <ActiveRooms />
+              <ScheduledRooms />
+              {/* <div className="w-1/2">Scheduled</div> */}
+            </div>
           </div>
         </div>
       </main>
