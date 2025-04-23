@@ -33,7 +33,7 @@ exports.createRoom = async (req, res) => {
     );
     const roomId = `${generateSegment()}-${generateSegment()}-${generateSegment()}`;
 
-    const joinLink = `${process.env.FRONTEND_URL}/room/${roomId}`;
+    const joinLink = `${process.env.FRONTEND_URL}/join-room/${roomId}`;
 
     // Create room object with provided data
     const roomData = {
@@ -97,7 +97,7 @@ exports.endRoom = async (req, res) => {
     }
 
     // Find the room by ID
-    const room = await Room.findById(roomId);
+    const room = await Room.findOne({ roomId });
     if (!room) {
       return res.status(404).json({
         success: false,
@@ -145,7 +145,7 @@ exports.joinRoom = async (req, res) => {
     }
 
     // Find the room by ID
-    const room = await Room.findById(roomId);
+    const room = await Room.findOne({ roomId });
     if (!room) {
       return res.status(404).json({
         success: false,
@@ -199,7 +199,7 @@ exports.leaveRoom = async (req, res) => {
     }
 
     // Find the room by ID
-    const room = await Room.findById(roomId);
+    const room = await Room.findOne({ roomId });
     if (!room) {
       return res.status(404).json({
         success: false,

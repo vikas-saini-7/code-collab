@@ -60,6 +60,15 @@ export default function Page() {
     },
   });
   const [room, setRoom] = useState("");
+  const params = useParams();
+
+  useEffect(() => {
+    // Extract roomId from URL params and set it as the initial value
+    if (params && params.roomId) {
+      const roomIdFromUrl = params.roomId as string;
+      setRoom(roomIdFromUrl);
+    }
+  }, [params]);
 
   if (status === "loading") {
     return <LoadingSpinner />;
