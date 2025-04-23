@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { useAppDispatch } from "@/redux/store";
+import { useState, useEffect } from "react";
+import { useAppDispatch, useAppSelector } from "@/redux/store";
 import { setRoomId } from "@/redux/reducers/roomReducer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -32,6 +32,7 @@ import { IconChevronCompactDown, IconChevronDown } from "@tabler/icons-react";
 const RoomForm = () => {
   const router = useRouter();
   const dispatch = useAppDispatch();
+  const profile = useAppSelector((state) => state.profile);
   const [roomType, setRoomType] = useState<"instant" | "scheduled">("instant");
   const [date, setDate] = useState<Date>();
   const [time, setTime] = useState<string>("");
@@ -42,6 +43,29 @@ const RoomForm = () => {
   const [error, setError] = useState<string | null>(null);
 
   const [adSetVisible, setAdSetVisible] = useState(false);
+
+  // Generate default room name using username and a random word
+  useEffect(() => {
+    if (profile.username) {
+      const randomWords = [
+        "Session",
+        // "Hub",
+        "Space",
+        "Room",
+        // "Lab",
+        // "Workshop",
+        // "Studio",
+        "Project",
+        "Collab",
+        "Zone",
+        "Arena",
+      ];
+      const randomWord =
+        randomWords[Math.floor(Math.random() * randomWords.length)];
+      const defaultName = `${profile.fullName}'s ${randomWord}`;
+      setName(defaultName);
+    }
+  }, [profile.username]);
 
   const hours = Array.from({ length: 24 }, (_, i) =>
     i.toString().padStart(2, "0")
@@ -63,7 +87,7 @@ const RoomForm = () => {
     try {
       // Prepare room data based on form state
       const roomData: IRoomData = {
-        name: name || "Untitled Room",
+        name: name || `${profile.username}'s Room`,
         type: roomType,
         description: description,
         maxParticipants: maxParticipants,
@@ -131,7 +155,7 @@ const RoomForm = () => {
       <CardContent className="space-y-6">
         <div className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="name">Room Name (optional)</Label>
+            <Label htmlFor="name">Room Name</Label>
             <Input
               id="name"
               placeholder="Enter room name"

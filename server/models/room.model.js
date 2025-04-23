@@ -3,6 +3,12 @@ const Schema = mongoose.Schema;
 
 const roomSchema = new Schema(
   {
+    roomId: {
+      type: String,
+      unique: true,
+      required: true,
+      trim: true,
+    },
     name: {
       type: String,
       required: true,
@@ -84,6 +90,11 @@ const roomSchema = new Schema(
       default: function () {
         return this.type === "instant" ? "active" : "scheduled";
       },
+    },
+    joinLink: {
+      type: String,
+      unique: true,
+      sparse: true,
     },
   },
   {

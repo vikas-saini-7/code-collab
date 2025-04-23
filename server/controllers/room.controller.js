@@ -23,13 +23,27 @@ exports.createRoom = async (req, res) => {
       });
     }
 
+    // Generate unique roomId for the join link
+    const { nanoid } = await import("nanoid");
+    const { customAlphabet } = await import("nanoid");
+
+    const generateSegment = customAlphabet(
+      "abcdefghijklmnopqrstuvwxyz0123456789",
+      3
+    );
+    const roomId = `${generateSegment()}-${generateSegment()}-${generateSegment()}`;
+
+    const joinLink = `${process.env.FRONTEND_URL}/room/${roomId}`;
+
     // Create room object with provided data
     const roomData = {
+      roomId,
       name,
       type: type,
       description,
       maxParticipants,
       host,
+      joinLink,
     };
 
     // Add scheduled room specific fields if type is scheduled
