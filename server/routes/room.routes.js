@@ -6,6 +6,7 @@ const authenticate = require("../middlewares/authenticate.js");
 // host specific endpoints
 router.post("/", authenticate, RoomController.createRoom);
 router.post("/end", authenticate, RoomController.endRoom);
+router.post("/update-settings", authenticate, RoomController.updateSettings);
 
 // participant specific endpoints
 router.post("/join", authenticate, RoomController.joinRoom);

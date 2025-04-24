@@ -10,10 +10,14 @@ import useSocket from "@/utils/useSocket";
 import SideBar from "@/components/room/SideBar";
 import CodeEditor from "@/components/room/CodeEditor";
 import { RoomContextProvider } from "@/providers/roomContextProvider";
+import LoadingSpinner from "@/components/common/LoadingSpinner";
+import { useSession } from "next-auth/react";
 
 export default function layout({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const dispatch = useAppDispatch();
+
+  const { data: session, status } = useSession();
 
   // store
   const username = useAppSelector((item) => item.user.username);
@@ -47,6 +51,18 @@ export default function layout({ children }: { children: ReactNode }) {
 
   useSocket();
 
+  if (status === "loading") {
+    return <LoadingSpinner />;
+  }
+
+  if (status === "unauthenticated") {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <h1 className="text-2xl font-bold">Please login to access this page</h1>
+      </div>
+    );
+  }
+
   return (
     <div className="max-w-[1680px] mx-auto flex w-full h-screen">
       {/* sidebar  */}
@@ -54,7 +70,6 @@ export default function layout({ children }: { children: ReactNode }) {
         <div className="flex h-screen">
           {/* features list  */}
           <SideBar />
-
           {/* feature body with context provider */}
           <div className="w-full border-r overflow-auto h-screen">
             <RoomContextProvider roomId={roomId}>

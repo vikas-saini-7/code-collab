@@ -174,7 +174,7 @@ const CodeEditor: React.FC = () => {
         className={`h-full`}
         value={activeFile.value}
         height="100%"
-        extensions={[langs[language]()]}
+        // extensions={[langs[language]()]}
         onChange={handleCodeChange}
         theme={blackTheme}
         style={{

@@ -131,6 +131,84 @@ exports.endRoom = async (req, res) => {
   }
 };
 
+// from body
+// configuration: {
+//   chatEnabled: true;
+// }
+// maxParticipants: 10;
+// permissions: {
+//   codeEdit: "host";
+// }
+
+exports.updateSettings = async (req, res) => {
+  try {
+    const { roomId } = req.body;
+    const userId = req.userId;
+    // Validate required fields
+    if (!roomId) {
+      return res.status(400).json({
+        success: false,
+        message: "Room ID is required",
+      });
+    }
+    // Find the room by ID
+    const room = await Room.findOne({ roomId });
+    if (!room) {
+      return res.status(404).json({
+        success: false,
+        message: "Room not found",
+      });
+    }
+    // Check if user is the host
+    if (room.host.toString() !== userId.toString()) {
+      return res.status(403).json({
+        success: false,
+        message: "Only the host can update the room settings",
+      });
+    }
+    // Update room settings
+    const {
+      configuration,
+      maxParticipants,
+      permissions,
+      description,
+      scheduledAt,
+    } = req.body;
+    if (configuration) {
+      room.configuration = {
+        ...room.configuration,
+        ...configuration,
+      };
+    }
+    if (maxParticipants) {
+      room.maxParticipants = maxParticipants;
+    }
+    if (permissions) {
+      room.permissions = {
+        ...room.permissions,
+        ...permissions,
+      };
+    }
+    if (description) {
+      room.description = description;
+    }
+    if (scheduledAt) {
+      room.scheduledAt = new Date(scheduledAt);
+    }
+    await room.save();
+    res.status(200).json({
+      success: true,
+      data: room,
+    });
+  } catch (error) {
+    console.error("Error updating room settings:", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal server error.",
+    });
+  }
+};
+
 exports.joinRoom = async (req, res) => {
   try {
     const { roomId } = req.body;

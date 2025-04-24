@@ -6,6 +6,7 @@ import React, {
   useEffect,
 } from "react";
 import axios from "axios";
+import LoadingSpinner from "@/components/common/LoadingSpinner";
 // import { toast } from "react-hot-toast";
 
 // Define types
@@ -80,7 +81,7 @@ export function RoomContextProvider({
         { withCredentials: true }
       );
       setRoomData(response.data.data);
-      console.log("Room data:", response.data.data);
+      // console.log("Room data:", response.data.data);
       setError(null);
     } catch (err) {
       console.error("Error fetching room data:", err);
@@ -100,7 +101,7 @@ export function RoomContextProvider({
 
   return (
     <RoomContext.Provider value={{ roomData, loading, error, fetchRoomData }}>
-      {children}
+      {loading ? <LoadingSpinner size="sm" /> : children}
     </RoomContext.Provider>
   );
 }

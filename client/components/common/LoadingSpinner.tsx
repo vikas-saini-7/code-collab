@@ -1,11 +1,23 @@
 import React from "react";
 
-const LoadingSpinner = () => {
+type LoadingSpinnerProps = {
+  size?: "default" | "sm";
+};
+
+const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
+  size = "default",
+}) => {
+  const spinnerSize = size === "sm" ? "h-6 w-6" : "h-12 w-12";
+  const textSize = size === "sm" ? "text-sm" : "text-base";
+  const spacing = size === "sm" ? "space-y-2" : "space-y-4";
+
   return (
     <div className="min-h-screen flex items-center justify-center">
-      <div className="text-center space-y-4">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-[#00E87B] border-r-2 mx-auto"></div>
-        <p className="text-muted-foreground">Loading...</p>
+      <div className={`text-center ${spacing}`}>
+        <div
+          className={`animate-spin rounded-full ${spinnerSize} border-t-2 border-[#00E87B] border-r-2 mx-auto`}
+        ></div>
+        <p className={`text-muted-foreground ${textSize}`}>Loading...</p>
       </div>
     </div>
   );

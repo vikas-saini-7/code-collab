@@ -29,7 +29,7 @@ const roomSchema = new Schema(
     maxParticipants: {
       type: Number,
       default: 10,
-      min: [1, "Room must allow at least 1 participant"],
+      min: [2, "Room must allow at least 2 participant"],
       max: [50, "Room cannot exceed 50 participants"],
     },
     // Scheduled room specific fields
