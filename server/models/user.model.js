@@ -1,6 +1,6 @@
-import mongoose from "mongoose";
+const mongoose = require("mongoose");
 
-const { Schema, model, models } = mongoose;
+const { Schema, model } = mongoose;
 
 const UserSchema = new Schema(
   {
@@ -51,5 +51,6 @@ const UserSchema = new Schema(
   { timestamps: true }
 );
 
-const User = models.User || model("User", UserSchema);
-export default User;
+// Use CommonJS export syntax since you're using require()
+const User = mongoose.models.User || mongoose.model("User", UserSchema);
+module.exports = User;

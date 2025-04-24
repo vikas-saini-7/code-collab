@@ -15,8 +15,7 @@ const initialState: settingsState = savedState
   ? JSON.parse(savedState)
   : {
       fontSize: 18,
-      language: "javascript",
-      theme: "theme-name",
+      theme: "default",
     };
 
 // Function to save the state to localStorage
@@ -33,12 +32,12 @@ const settingsSlice = createSlice({
       state.fontSize = action.payload;
       saveStateToLocalStorage(state);
     },
-    changeLanguage(state, action: PayloadAction<LangsType>) {
-      state.language = action.payload;
+    changeTheme(state, action: PayloadAction<string>) {
+      state.theme = action.payload;
       saveStateToLocalStorage(state);
     },
   },
 });
 
-export const { changeFontSize, changeLanguage } = settingsSlice.actions;
+export const { changeFontSize, changeTheme } = settingsSlice.actions;
 export default settingsSlice.reducer;

@@ -1,4 +1,5 @@
 const Room = require("../models/room.model.js");
+const User = require("../models/user.model.js");
 
 exports.createRoom = async (req, res) => {
   try {
@@ -323,6 +324,66 @@ exports.getPreviousRooms = async (req, res) => {
     });
   } catch (error) {
     console.error("Error fetching previous rooms:", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal server error.",
+    });
+  }
+};
+
+exports.getRoom = async (req, res) => {
+  try {
+    const { roomId } = req.params;
+    const userId = req.userId;
+
+    // Validate required fields
+    if (!roomId) {
+      return res.status(400).json({
+        success: false,
+        message: "Room ID is required",
+      });
+    }
+
+    // Find the room by ID
+    const room = await Room.findOne({ roomId }).populate({
+      path: "participants.user",
+      select: "fullName username email profileImage", // Select the fields you want to include
+    });
+    // .populate({
+    //   path: "host",
+    //   select: "fullName username email profileImage", // Select the fields you want to include for the host
+    // })
+    // .populate({
+    //   path: "permissions.allowedEditors",
+    //   select: "fullName username email profileImage", // Select the fields for allowed editors
+    // });
+    if (!room) {
+      return res.status(404).json({
+        success: false,
+        message: "Room not found",
+      });
+    }
+
+    // Check if user is a participant or the host
+    const isParticipant = room.participants.some(
+      (participant) => participant.user._id.toString() === userId.toString()
+    );
+    const isHost = room.host._id.toString() === userId.toString();
+
+    if (!isParticipant && !isHost) {
+      return res.status(403).json({
+        success: false,
+        message:
+          "Access denied. You must be a participant or host of this room.",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: room,
+    });
+  } catch (error) {
+    console.error("Error fetching room:", error);
     res.status(500).json({
       success: false,
       message: "Internal server error.",

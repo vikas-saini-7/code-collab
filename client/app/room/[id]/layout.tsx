@@ -9,6 +9,7 @@ import { usePathname } from "next/navigation";
 import useSocket from "@/utils/useSocket";
 import SideBar from "@/components/room/SideBar";
 import CodeEditor from "@/components/room/CodeEditor";
+import { RoomContextProvider } from "@/providers/roomContextProvider";
 
 export default function layout({ children }: { children: ReactNode }) {
   const pathname = usePathname();
@@ -21,25 +22,25 @@ export default function layout({ children }: { children: ReactNode }) {
   /////////////////////////////
   //////  getting user name and roomId
   /////////////////////////////
-  useEffect(() => {
-    if (!username) {
-      let username = prompt("Enter your name");
-      dispatch(setUsername(username));
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (!username) {
+  //     let username = prompt("Enter your name");
+  //     dispatch(setUsername(username));
+  //   }
+  // }, []);
 
   useEffect(() => {
-    const roomIdFromUrl = pathname.split("/")[1]; // Extract room ID from URL
+    const roomIdFromUrl = pathname.split("/")[2]; // Fix to correctly extract room ID from URL
     if (roomIdFromUrl && roomIdFromUrl !== roomId) {
       dispatch(setRoomId(roomIdFromUrl));
     }
-  }, [roomId, dispatch]);
+  }, [pathname, dispatch]);
 
   /////////////////////////////
   //////  Socket IO Implimentation
   /////////////////////////////
   useEffect(() => {
-    if (username) {
+    if (username && roomId) {
       socket.emit("joinRoom", { username, roomId });
     }
   }, [username, roomId]);
@@ -54,8 +55,12 @@ export default function layout({ children }: { children: ReactNode }) {
           {/* features list  */}
           <SideBar />
 
-          {/* feature body  */}
-          <div className="w-full border-r">{children}</div>
+          {/* feature body with context provider */}
+          <div className="w-full border-r overflow-auto h-screen">
+            <RoomContextProvider roomId={roomId}>
+              {children}
+            </RoomContextProvider>
+          </div>
         </div>
       </div>
 
