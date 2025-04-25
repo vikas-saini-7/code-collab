@@ -177,8 +177,6 @@ exports.deleteFile = async (req, res) => {
     // Delete the file
     await existingFile.deleteOne();
 
-    console.log("yes");
-
     res.status(200).json({
       success: true,
       message: "File deleted successfully",
@@ -192,17 +190,9 @@ exports.deleteFile = async (req, res) => {
   }
 };
 
-// await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/auto-save`, {
-//         fileId: activeFile._id,
-//         content: latestFileContent.current,
-//         roomId: roomData?._id,
-//       });
-
 exports.autoSaveFile = async (req, res) => {
   try {
     const { fileId, content, roomId } = req.body;
-
-    console.log(req.body);
 
     // Validate input
     if (!fileId || !content || !roomId) {
