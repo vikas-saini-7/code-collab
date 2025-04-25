@@ -22,7 +22,7 @@ import { toast } from "sonner";
 const page: React.FC = () => {
   const dispatch = useAppDispatch();
   const { roomData, loading, error } = useRoomContext();
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
 
   const fontSize = useAppSelector((item) => item.settings.fontSize);
   const theme = useAppSelector((item) => item.settings.theme);

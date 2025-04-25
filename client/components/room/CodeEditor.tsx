@@ -122,7 +122,7 @@ const CodeEditor: React.FC = () => {
       dispatch(changeCode(val));
 
       socket.emit("changeCode", {
-        fileId: activeFile.id,
+        fileId: activeFile._id,
         code: val,
         username: username,
         roomId: roomId,
@@ -172,7 +172,7 @@ const CodeEditor: React.FC = () => {
     <div className="text-gray-900 h-screen" style={{ position: "relative" }}>
       <CodeMirror
         className={`h-full`}
-        value={activeFile.value}
+        value={activeFile?.content}
         height="100%"
         // extensions={[langs[language]()]}
         onChange={handleCodeChange}

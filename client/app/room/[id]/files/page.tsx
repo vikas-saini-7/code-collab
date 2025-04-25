@@ -1,46 +1,214 @@
 "use client";
 import React, { useRef, useState, useEffect } from "react";
-import { IconPlus, IconTrash, IconX } from "@tabler/icons-react";
-import { useAppDispatch, useAppSelector } from "@/redux/store";
 import {
-  changeActiveFile,
-  createFile,
-  fileDelete,
-  saveFile,
-} from "@/redux/reducers/filesReducer";
+  IconPlus,
+  IconTrash,
+  IconX,
+  IconBrandJavascript,
+  IconBrandTypescript,
+  IconBrandHtml5,
+  IconBrandCss3,
+  IconFileText,
+  IconBrandPython,
+  IconCode,
+} from "@tabler/icons-react";
 import { Button } from "@/components/ui/button";
+import { useRoomContext } from "@/providers/roomContextProvider";
+import { toast } from "sonner";
+import axios from "axios";
 
-const page: React.FC = () => {
-  const dispatch = useAppDispatch();
+const Page: React.FC = () => {
   const inputRef = useRef<HTMLInputElement>(null);
+  const { roomData, setRoomData } = useRoomContext();
 
-  // store
-  const filesList = useAppSelector((item) => item.files.filesList);
-  const activeFile = useAppSelector((item) => item.files.activeFile);
+  // Local state (replacing Redux)
+  const [filesList, setFilesList] = useState<any[]>([]);
+  const [activeFile, setActiveFile] = useState<any>(null);
+  const [createFileVisible, setCreateFileVisible] = useState<boolean>(false);
 
-  // local
-  const [createFileVisible, setCreateFileVisible] = useState<Boolean>(false);
+  // Initialize filesList from roomData
+  useEffect(() => {
+    if (roomData?.files) {
+      setFilesList(roomData.files);
+      // Set first file as active by default if available
+      if (roomData.files.length > 0 && !activeFile) {
+        setActiveFile(roomData.files[0]);
+      }
+    }
+  }, [roomData]);
 
-  // actions
-  const handleFileSave = () => {
-    dispatch(saveFile(1));
-  };
+  // Function to get file icon based on extension
+  const getFileIcon = (fileName: string) => {
+    const extension = fileName.split(".").pop()?.toLowerCase();
 
-  const handleActiveFileChange = (file: any) => {
-    // console.log("Changing file: ", file);
-    dispatch(changeActiveFile(file));
-  };
-
-  const handleCreateFile = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === "Enter") {
-      const input = event.target as HTMLInputElement;
-      dispatch(createFile(input.value));
-      setCreateFileVisible(false);
+    switch (extension) {
+      case "js":
+      case "jsx":
+        return <IconBrandJavascript size={16} className="text-yellow-400" />;
+      case "ts":
+      case "tsx":
+        return <IconBrandTypescript size={16} className="text-blue-400" />;
+      case "html":
+        return <IconBrandHtml5 size={16} className="text-orange-500" />;
+      case "css":
+        return <IconBrandCss3 size={16} className="text-blue-500" />;
+      case "py":
+        return <IconBrandPython size={16} className="text-green-500" />;
+      default:
+        return <IconFileText size={16} className="text-gray-400" />;
     }
   };
 
-  const handleFileDelete = (file: any) => {
-    dispatch(fileDelete(file));
+  // Actions
+  const handleFileSave = async () => {
+    try {
+      // Implement your save file logic here
+      toast.success("File saved successfully!");
+    } catch (error) {
+      console.error("Error saving file:", error);
+      toast.error("Failed to save file");
+    }
+  };
+
+  const handleActiveFileChange = (file: any) => {
+    setActiveFile(file);
+  };
+
+  const handleCreateFile = async (
+    event: React.KeyboardEvent<HTMLInputElement>
+  ) => {
+    if (event.key === "Enter" && inputRef.current?.value) {
+      try {
+        const fullFileName = inputRef.current.value;
+        const lastDotIndex = fullFileName.lastIndexOf(".");
+
+        let fileName, extension;
+        if (lastDotIndex === -1) {
+          // No extension provided, default to txt
+          fileName = fullFileName;
+          extension = "txt";
+        } else {
+          fileName = fullFileName.substring(0, lastDotIndex);
+          extension = fullFileName.substring(lastDotIndex + 1);
+        }
+
+        // Determine language based on extension
+        let language = "";
+        switch (extension.toLowerCase()) {
+          case "js":
+            language = "javascript";
+            break;
+          case "jsx":
+            language = "javascript";
+            break;
+          case "ts":
+            language = "typescript";
+            break;
+          case "tsx":
+            language = "typescript";
+            break;
+          case "html":
+            language = "html";
+            break;
+          case "css":
+            language = "css";
+            break;
+          case "py":
+            language = "python";
+            break;
+          default:
+            language = "plaintext";
+        }
+
+        // Create fullFileName that includes the extension
+        const fileNameWithExtension =
+          lastDotIndex === -1 ? `${fileName}.${extension}` : fullFileName;
+
+        const fileExists = filesList.some(
+          (file) => file.fileName === fileNameWithExtension
+        );
+        if (fileExists) {
+          toast.error(`File "${fileNameWithExtension}" already exists`);
+          return;
+        }
+
+        const response = await axios.post(
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/file`,
+          {
+            roomId: roomData?._id,
+            fileName: fileNameWithExtension,
+            language,
+            extension,
+            content: "",
+          },
+          { withCredentials: true }
+        );
+
+        if (response.data.success) {
+          // Add the new file to state and update roomData
+          const newFile = response.data.data;
+          const updatedFiles = [...filesList, newFile];
+          setFilesList(updatedFiles);
+          setActiveFile(newFile);
+
+          // Update roomData if it exists
+          if (roomData) {
+            setRoomData({
+              ...roomData,
+              files: updatedFiles,
+            });
+          }
+
+          setCreateFileVisible(false);
+          inputRef.current.value = "";
+          toast.success("File created successfully!");
+        } else {
+          toast.error(response.data.message || "Failed to create file");
+        }
+      } catch (err) {
+        toast.error("Error creating file");
+      }
+    }
+  };
+
+  const handleFileDelete = async (file: any) => {
+    try {
+      // Make PUT request to delete the file
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/file/delete`,
+        {
+          roomId: roomData?._id,
+          fileId: file._id,
+        },
+        { withCredentials: true }
+      );
+
+      if (response.data.success) {
+        // Update local state and roomData
+        const updatedFiles = filesList.filter((f) => f._id !== file._id);
+        setFilesList(updatedFiles);
+
+        // If the active file was deleted, set a new active file
+        if (activeFile?._id === file._id) {
+          setActiveFile(updatedFiles.length > 0 ? updatedFiles[0] : null);
+        }
+
+        // Update roomData if it exists
+        if (roomData) {
+          setRoomData({
+            ...roomData,
+            files: updatedFiles,
+          });
+        }
+
+        toast.success("File deleted successfully!");
+      } else {
+        toast.error(response.data.message || "Failed to delete file");
+      }
+    } catch (err) {
+      console.error("Error deleting file:", err);
+      toast.error("Error deleting file");
+    }
   };
 
   useEffect(() => {
@@ -60,7 +228,7 @@ const page: React.FC = () => {
             onClick={() => setCreateFileVisible(!createFileVisible)}
           >
             <IconPlus
-              className={`${createFileVisible && "rotate-45"}`}
+              className={`${createFileVisible ? "rotate-45" : ""}`}
               size={16}
             />
           </div>
@@ -70,21 +238,20 @@ const page: React.FC = () => {
         <div>
           {filesList.map((file) => (
             <div
-              key={file.id}
+              key={file._id}
               onClick={() => handleActiveFileChange(file)}
               className={`${
-                file.id === activeFile.id &&
+                activeFile?._id === file._id &&
                 "bg-gray-500/10 hover:bg-gray-500/10"
               } hover:bg-gray-500/10 mb-1 rounded px-2 py-1 flex gap-1 items-center justify-between text-sm cursor-pointer `}
             >
-              <div className="flex items-center gap-1">
-                <p>{file.icon}</p>
-                <p>
-                  {file.name}.{file.extension}
-                </p>
+              <div className="flex items-center gap-2">
+                {getFileIcon(file.fileName)}
+                <p>{file.fileName}</p>
               </div>
               <div
-                onClick={() => {
+                onClick={(e) => {
+                  e.stopPropagation();
                   handleFileDelete(file);
                 }}
                 className="hover:text-red-500"
@@ -99,7 +266,7 @@ const page: React.FC = () => {
             <div
               className={`bg-gray-500/5 border-gray-500/10 rounded px-2 py-1 flex gap-1 items-center justify-between text-sm`}
             >
-              <p>📄</p>
+              <IconCode size={16} className="text-gray-400" />
               <input
                 ref={inputRef}
                 className="bg-transparent w-full px-[1px] outline-none"
@@ -108,7 +275,7 @@ const page: React.FC = () => {
               />
               <p
                 className="cursor-pointer"
-                onClick={() => setCreateFileVisible(!createFileVisible)}
+                onClick={() => setCreateFileVisible(false)}
               >
                 <IconX size={14} />
               </p>
@@ -122,6 +289,7 @@ const page: React.FC = () => {
         <Button
           onClick={handleFileSave}
           className={`bg-[#00E87B] w-full font-bold`}
+          disabled={!activeFile}
         >
           Save File
         </Button>
@@ -130,4 +298,4 @@ const page: React.FC = () => {
   );
 };
 
-export default page;
+export default Page;

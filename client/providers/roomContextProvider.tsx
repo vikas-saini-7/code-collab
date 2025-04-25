@@ -32,6 +32,20 @@ interface Configuration {
   chatEnabled: boolean;
 }
 
+interface File {
+  _id: string;
+  roomId: string;
+  fileName: string;
+  language: string;
+  extension: string;
+  content: string;
+  createdBy: string;
+  lastEditedBy: string;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+}
+
 interface RoomData {
   _id: string;
   roomId: string;
@@ -49,6 +63,7 @@ interface RoomData {
   __v: number;
   configuration: Configuration;
   permissions: Permissions;
+  files: File[];
 }
 
 interface RoomContextType {
@@ -56,6 +71,7 @@ interface RoomContextType {
   loading: boolean;
   error: string | null;
   fetchRoomData: (roomId: string) => Promise<void>;
+  setRoomData: React.Dispatch<React.SetStateAction<RoomData | null>>;
 }
 
 // Create the context
@@ -100,7 +116,9 @@ export function RoomContextProvider({
   }, [roomId]);
 
   return (
-    <RoomContext.Provider value={{ roomData, loading, error, fetchRoomData }}>
+    <RoomContext.Provider
+      value={{ roomData, loading, error, fetchRoomData, setRoomData }}
+    >
       {loading ? <LoadingSpinner size="sm" /> : children}
     </RoomContext.Provider>
   );

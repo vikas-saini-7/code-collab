@@ -96,6 +96,15 @@ const roomSchema = new Schema(
       unique: true,
       sparse: true,
     },
+    files: {
+      type: [
+        {
+          type: Schema.Types.ObjectId,
+          ref: "File",
+        },
+      ],
+      default: [],
+    },
   },
   {
     timestamps: true,

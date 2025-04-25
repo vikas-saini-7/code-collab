@@ -3,34 +3,38 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { toast } from "sonner";
 
 interface IFile {
-  id: number;
-  icon: string;
-  name: string;
+  _id: string;
+  roomId: string;
+  fileName: string;
+  language: string;
   extension: string;
-  type: string;
-  size: number;
-  value?: string;
+  content: string;
+  createdBy: string;
+  lastEditedBy: string;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
 }
 
 const FILES: IFile[] = [
-  {
-    id: 1,
-    icon: "📄",
-    name: "script",
-    extension: "js",
-    type: "document",
-    size: 1024,
-    value: `console.log("Hello World from store")`,
-  },
-  {
-    id: 2,
-    icon: "📄",
-    name: "program",
-    extension: "java",
-    type: "spreadsheet",
-    size: 2048,
-    value: `psvm()`,
-  },
+  // {
+  //   id: 1,
+  //   icon: "📄",
+  //   name: "script",
+  //   extension: "js",
+  //   type: "document",
+  //   size: 1024,
+  //   value: `console.log("Hello World from store")`,
+  // },
+  // {
+  //   id: 2,
+  //   icon: "📄",
+  //   name: "program",
+  //   extension: "java",
+  //   type: "spreadsheet",
+  //   size: 2048,
+  //   value: `psvm()`,
+  // },
 ];
 
 interface filesState {
@@ -50,7 +54,7 @@ const filesSlice = createSlice({
     // change code
     changeCode: (state, action) => {
       console.log("Running", action.payload);
-      state.activeFile.value = action.payload;
+      state.activeFile.content = action.payload;
     },
 
     changeCodeInFile: (state, action) => {
@@ -58,14 +62,14 @@ const filesSlice = createSlice({
       const { fileId, code } = action.payload;
       console.log("From file reducer: ", fileId, code);
       state.filesList = state.filesList.map((item) => {
-        if (item.id == fileId) {
+        if (item._id == fileId) {
           return { ...item, value: code };
         }
         return item;
       });
 
-      if (state.activeFile.id === fileId) {
-        state.activeFile.value = code;
+      if (state.activeFile._id === fileId) {
+        state.activeFile.content = code;
       }
 
       console.log(state.filesList);
@@ -78,21 +82,21 @@ const filesSlice = createSlice({
     },
 
     // createFile
-    createFile: (state, action) => {
-      let [name, extension] = action.payload.split(".");
-      let newFile: IFile = {
-        id: state.filesList.length + 1,
-        icon: "📄",
-        name: name,
-        extension: extension,
-        size: 1024,
-        type: "document",
-        value: "",
-      };
-      state.filesList.push(newFile);
-      state.activeFile = newFile;
-      toast.success("file created");
-    },
+    // createFile: (state, action) => {
+    //   let [name, extension] = action.payload.split(".");
+    //   let newFile: IFile = {
+    //     _id: state.filesList.length + 1,
+    //     icon: "📄",
+    //     name: name,
+    //     extension: extension,
+    //     size: 1024,
+    //     type: "document",
+    //     value: "",
+    //   };
+    //   state.filesList.push(newFile);
+    //   state.activeFile = newFile;
+    //   toast.success("file created");
+    // },
 
     // saveFile
     saveFile: (state, action) => {
@@ -121,12 +125,12 @@ const filesSlice = createSlice({
       }
 
       console.log("saving file");
-      const blob = new Blob([state.activeFile.value || ""], {
+      const blob = new Blob([state.activeFile.content || ""], {
         type: fileType,
       });
       const link = document.createElement("a");
       link.href = URL.createObjectURL(blob);
-      link.download = state.activeFile.name + "." + state.activeFile.extension;
+      link.download = state.activeFile.fileName;
       link.click();
     },
 
@@ -134,7 +138,7 @@ const filesSlice = createSlice({
       let consent = confirm("Are you sure You want to delete this file");
       if (consent) {
         state.filesList = state.filesList.filter(
-          (item) => item.id !== action.payload.id
+          (item) => item._id !== action.payload.id
         );
       }
     },
@@ -145,7 +149,7 @@ export const {
   changeCode,
   changeCodeInFile,
   changeActiveFile,
-  createFile,
+  // createFile,
   saveFile,
   fileDelete,
 } = filesSlice.actions;

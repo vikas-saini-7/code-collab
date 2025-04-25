@@ -423,18 +423,12 @@ exports.getRoom = async (req, res) => {
     }
 
     // Find the room by ID
-    const room = await Room.findOne({ roomId }).populate({
-      path: "participants.user",
-      select: "fullName username email profileImage", // Select the fields you want to include
-    });
-    // .populate({
-    //   path: "host",
-    //   select: "fullName username email profileImage", // Select the fields you want to include for the host
-    // })
-    // .populate({
-    //   path: "permissions.allowedEditors",
-    //   select: "fullName username email profileImage", // Select the fields for allowed editors
-    // });
+    const room = await Room.findOne({ roomId })
+      .populate({
+        path: "participants.user",
+        select: "fullName username email profileImage",
+      })
+      .populate("files");
     if (!room) {
       return res.status(404).json({
         success: false,
