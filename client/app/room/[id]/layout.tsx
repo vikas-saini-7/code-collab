@@ -12,44 +12,23 @@ import CodeEditor from "@/components/room/CodeEditor";
 import { RoomContextProvider } from "@/providers/roomContextProvider";
 import LoadingSpinner from "@/components/common/LoadingSpinner";
 import { useSession } from "next-auth/react";
+import EditorHeader from "@/components/room/EditorHeader";
 
 export default function layout({ children }: { children: ReactNode }) {
   const pathname = usePathname();
-  const dispatch = useAppDispatch();
 
   const { data: session, status } = useSession();
 
   // store
   const username = useAppSelector((item) => item.user.username);
-  const roomId = useAppSelector((item) => item.room.roomId);
-
-  /////////////////////////////
-  //////  getting user name and roomId
-  /////////////////////////////
-  // useEffect(() => {
-  //   if (!username) {
-  //     let username = prompt("Enter your name");
-  //     dispatch(setUsername(username));
-  //   }
-  // }, []);
+  const [roomId, setRoomId] = React.useState<string>("");
 
   useEffect(() => {
-    const roomIdFromUrl = pathname.split("/")[2]; // Fix to correctly extract room ID from URL
+    const roomIdFromUrl = pathname.split("/")[2];
     if (roomIdFromUrl && roomIdFromUrl !== roomId) {
-      dispatch(setRoomId(roomIdFromUrl));
+      setRoomId(roomIdFromUrl);
     }
-  }, [pathname, dispatch]);
-
-  /////////////////////////////
-  //////  Socket IO Implimentation
-  /////////////////////////////
-  useEffect(() => {
-    if (username && roomId) {
-      socket.emit("joinRoom", { username, roomId });
-    }
-  }, [username, roomId]);
-
-  useSocket();
+  }, []);
 
   if (status === "loading") {
     return <LoadingSpinner text="Authenticating..." />;
@@ -79,7 +58,8 @@ export default function layout({ children }: { children: ReactNode }) {
         </div>
 
         {/* code editor  */}
-        <div className="flex-1">
+        <div className="flex-1 h-screen">
+          <EditorHeader />
           <CodeEditor />
         </div>
       </div>

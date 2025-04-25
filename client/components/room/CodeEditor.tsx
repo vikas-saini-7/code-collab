@@ -131,35 +131,7 @@ const CodeEditor: React.FC = () => {
   const fileLanguage = activeFile?.language || "javascript";
 
   return (
-    <div className="text-gray-900 h-screen" style={{ position: "relative" }}>
-      <div
-        className={`absolute top-2 right-4 z-10 px-3 py-1.5 rounded-md flex items-center gap-1.5 transition-all duration-300`}
-        style={{
-          backgroundColor: "rgba(26, 26, 26, 0.8)",
-          backdropFilter: "blur(4px)",
-          border: `1px solid ${
-            saveStatus === "saved" ? "#00E87B" : "transparent"
-          }`,
-        }}
-      >
-        {saveStatus === "saving" ? (
-          <>
-            <IconLoader2 size={16} className="animate-spin" color="#e2e8f0" />
-            <span className="text-xs text-gray-200">Saving</span>
-          </>
-        ) : saveStatus === "saved" ? (
-          <>
-            <IconCheck size={16} color="#00E87B" />
-            <span className="text-xs text-gray-200">Saved</span>
-          </>
-        ) : (
-          <>
-            <IconCheck size={16} color="#00E87B" />
-            <span className="text-xs text-gray-200">Ready</span>
-          </>
-        )}
-      </div>
-
+    <div className="text-gray-900" style={{ position: "relative" }}>
       <CodeMirror
         className={`h-full`}
         value={localContent}
