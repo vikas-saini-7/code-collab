@@ -19,11 +19,10 @@ import axios from "axios";
 
 const Page: React.FC = () => {
   const inputRef = useRef<HTMLInputElement>(null);
-  const { roomData, setRoomData } = useRoomContext();
+  const { roomData, setRoomData, activeFile, setActiveFile } = useRoomContext();
 
   // Local state (replacing Redux)
   const [filesList, setFilesList] = useState<any[]>([]);
-  const [activeFile, setActiveFile] = useState<any>(null);
   const [createFileVisible, setCreateFileVisible] = useState<boolean>(false);
 
   // Initialize filesList from roomData

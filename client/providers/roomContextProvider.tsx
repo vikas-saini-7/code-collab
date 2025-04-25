@@ -4,10 +4,11 @@ import React, {
   ReactNode,
   useState,
   useEffect,
+  useCallback,
 } from "react";
 import axios from "axios";
 import LoadingSpinner from "@/components/common/LoadingSpinner";
-// import { toast } from "react-hot-toast";
+import { debounce } from "lodash";
 
 // Define types
 interface User {
@@ -72,6 +73,10 @@ interface RoomContextType {
   error: string | null;
   fetchRoomData: (roomId: string) => Promise<void>;
   setRoomData: React.Dispatch<React.SetStateAction<RoomData | null>>;
+  activeFile: File | null;
+  setActiveFile: React.Dispatch<React.SetStateAction<File | null>>;
+  updateFileContent: (fileId: string, content: string, roomId: string) => void;
+  saveStatus: "saved" | "saving" | "idle";
 }
 
 // Create the context
@@ -88,6 +93,10 @@ export function RoomContextProvider({
   const [roomData, setRoomData] = useState<RoomData | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const [activeFile, setActiveFile] = useState<File | null>(null);
+  const [saveStatus, setSaveStatus] = useState<"saved" | "saving" | "idle">(
+    "idle"
+  );
 
   const fetchRoomData = async (roomId: string) => {
     try {
@@ -97,7 +106,12 @@ export function RoomContextProvider({
         { withCredentials: true }
       );
       setRoomData(response.data.data);
-      // console.log("Room data:", response.data.data);
+
+      // Set the first file as active by default if available and no active file is set
+      if (response.data.data?.files?.length > 0 && !activeFile) {
+        setActiveFile(response.data.data.files[0]);
+      }
+
       setError(null);
     } catch (err) {
       console.error("Error fetching room data:", err);
@@ -108,6 +122,67 @@ export function RoomContextProvider({
     }
   };
 
+  // Function to save file to the backend
+  const saveFileToBackend = async (
+    fileId: string,
+    content: string,
+    roomId: string
+  ) => {
+    try {
+      setSaveStatus("saving");
+
+      await axios.post(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/file/auto-save`,
+        { fileId, content, roomId: roomId },
+        { withCredentials: true }
+      );
+
+      setSaveStatus("saved");
+      // Optionally add toast notification
+      // toast.success("Changes saved");
+    } catch (err) {
+      console.error("Error saving file:", err);
+      setSaveStatus("idle");
+      // toast.error("Failed to save changes");
+    }
+  };
+
+  // Create debounced save function that persists between renders
+  const debouncedSave = useCallback(
+    debounce((fileId: string, content: string, roomId: string) => {
+      saveFileToBackend(fileId, content, roomId);
+    }, 500), // 500 M.second delay
+    []
+  );
+
+  // Update file content and trigger auto-save
+  const updateFileContent = useCallback(
+    (fileId: string, content: string, roomId: string) => {
+      // Update the local state immediately
+      setRoomData((prevRoomData) => {
+        if (!prevRoomData) return null;
+
+        const updatedFiles = prevRoomData.files.map((file) => {
+          if (file._id === fileId) {
+            return { ...file, content };
+          }
+          return file;
+        });
+
+        // If this is the active file, update it as well
+        if (activeFile && activeFile._id === fileId) {
+          setActiveFile({ ...activeFile, content });
+        }
+
+        return { ...prevRoomData, files: updatedFiles };
+      });
+
+      // Trigger the debounced save
+      debouncedSave(fileId, content, roomId);
+    },
+    [debouncedSave, activeFile]
+  );
+
   // Fetch room data when roomId changes
   useEffect(() => {
     if (roomId) {
@@ -117,9 +192,19 @@ export function RoomContextProvider({
 
   return (
     <RoomContext.Provider
-      value={{ roomData, loading, error, fetchRoomData, setRoomData }}
+      value={{
+        roomData,
+        loading,
+        error,
+        fetchRoomData,
+        setRoomData,
+        activeFile,
+        setActiveFile,
+        updateFileContent,
+        saveStatus,
+      }}
     >
-      {loading ? <LoadingSpinner size="sm" /> : children}
+      {loading ? <LoadingSpinner text="Loading Room..." /> : children}
     </RoomContext.Provider>
   );
 }

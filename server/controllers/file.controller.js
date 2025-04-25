@@ -191,3 +191,59 @@ exports.deleteFile = async (req, res) => {
     });
   }
 };
+
+// await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/auto-save`, {
+//         fileId: activeFile._id,
+//         content: latestFileContent.current,
+//         roomId: roomData?._id,
+//       });
+
+exports.autoSaveFile = async (req, res) => {
+  try {
+    const { fileId, content, roomId } = req.body;
+
+    console.log(req.body);
+
+    // Validate input
+    if (!fileId || !content || !roomId) {
+      return res.status(400).json({
+        success: false,
+        message: "Missing required fields",
+      });
+    }
+
+    // Check if the file exists
+    const existingFile = await File.findById(fileId);
+    if (!existingFile) {
+      return res.status(404).json({
+        success: false,
+        message: "File not found",
+      });
+    }
+
+    // Check if the file belongs to the room
+    if (existingFile.roomId.toString() !== roomId) {
+      return res.status(403).json({
+        success: false,
+        message: "File does not belong to this room",
+      });
+    }
+
+    // Update the file content
+    existingFile.content = content;
+    existingFile.lastEditedBy = req.userId;
+
+    await existingFile.save();
+
+    res.status(200).json({
+      success: true,
+      data: existingFile,
+    });
+  } catch (error) {
+    console.error("Error auto-saving file:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+};

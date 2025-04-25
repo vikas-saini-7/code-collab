@@ -52,7 +52,7 @@ export default function layout({ children }: { children: ReactNode }) {
   useSocket();
 
   if (status === "loading") {
-    return <LoadingSpinner />;
+    return <LoadingSpinner text="Authenticating..." />;
   }
 
   if (status === "unauthenticated") {
@@ -64,25 +64,25 @@ export default function layout({ children }: { children: ReactNode }) {
   }
 
   return (
-    <div className="max-w-[1680px] mx-auto flex w-full h-screen">
-      {/* sidebar  */}
-      <div className="w-[320px] lg:w-[400px]">
-        <div className="flex h-screen">
-          {/* features list  */}
-          <SideBar />
-          {/* feature body with context provider */}
-          <div className="w-full border-r overflow-auto h-screen">
-            <RoomContextProvider roomId={roomId}>
+    <RoomContextProvider roomId={roomId}>
+      <div className="max-w-[1680px] mx-auto flex w-full h-screen">
+        {/* sidebar  */}
+        <div className="w-[320px] lg:w-[400px]">
+          <div className="flex h-screen">
+            {/* features list  */}
+            <SideBar />
+            {/* feature body with context provider */}
+            <div className="w-full border-r overflow-auto h-screen">
               {children}
-            </RoomContextProvider>
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* code editor  */}
-      <div className="flex-1">
-        <CodeEditor />
+        {/* code editor  */}
+        <div className="flex-1">
+          <CodeEditor />
+        </div>
       </div>
-    </div>
+    </RoomContextProvider>
   );
 }

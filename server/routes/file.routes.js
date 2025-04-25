@@ -7,4 +7,6 @@ router.post("/", authenticate, FileController.createFile);
 router.put("/", authenticate, FileController.updateFile);
 router.post("/delete", authenticate, FileController.deleteFile);
 
+router.post("/auto-save", FileController.autoSaveFile);
+
 module.exports = router;

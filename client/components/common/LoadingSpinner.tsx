@@ -2,10 +2,12 @@ import React from "react";
 
 type LoadingSpinnerProps = {
   size?: "default" | "sm";
+  text?: string;
 };
 
 const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
   size = "default",
+  text = "Loading...",
 }) => {
   const spinnerSize = size === "sm" ? "h-6 w-6" : "h-12 w-12";
   const textSize = size === "sm" ? "text-sm" : "text-base";
@@ -17,7 +19,7 @@ const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
         <div
           className={`animate-spin rounded-full ${spinnerSize} border-t-2 border-[#00E87B] border-r-2 mx-auto`}
         ></div>
-        <p className={`text-muted-foreground ${textSize}`}>Loading...</p>
+        <p className={`text-muted-foreground ${textSize}`}>{text}</p>
       </div>
     </div>
   );

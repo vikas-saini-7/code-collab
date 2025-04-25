@@ -1,16 +1,14 @@
 "use client";
-import React, { useState, useRef, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import CodeMirror from "@uiw/react-codemirror";
-import { dracula } from "@uiw/codemirror-theme-dracula";
-import { langs } from "@uiw/codemirror-extensions-langs";
-import { useAppDispatch, useAppSelector } from "@/redux/store";
-import { changeCode } from "@/redux/reducers/filesReducer";
-import socket from "@/utils/socket";
-import Tooltip from "./Tooltip";
 import { usePathname } from "next/navigation";
 import VideoContainer from "./VideoContainer";
 import { createTheme } from "@uiw/codemirror-themes";
 import { tags as t } from "@lezer/highlight";
+import { useRoomContext } from "@/providers/roomContextProvider";
+import { useAppSelector } from "@/redux/store";
+import { IconCheck, IconRefresh, IconLoader2 } from "@tabler/icons-react";
+import { langs } from "@uiw/codemirror-extensions-langs";
 
 const blackTheme = createTheme({
   theme: "dark",
@@ -90,100 +88,89 @@ const blackTheme = createTheme({
   ],
 });
 
+const getLanguageExtension = (fileLanguage: string) => {
+  // Check if the language exists in the langs object
+  if (fileLanguage in langs) {
+    return langs[fileLanguage as keyof typeof langs];
+  }
+  // Return javascript as fallback
+  return langs.javascript;
+};
+
 const CodeEditor: React.FC = () => {
   // return video container component if path is video
   const pathname = usePathname();
   const endPart = pathname.split("/").pop();
   if (endPart === "video") return <VideoContainer />;
 
-  // Main Component logic goes here
-  const dispatch = useAppDispatch();
-
-  // store
-  const username = useAppSelector((item) => item.user.username);
-  const activeFile = useAppSelector((item) => item.files.activeFile);
-  const roomId = useAppSelector((item) => item.room.roomId);
-
+  const { activeFile, updateFileContent, saveStatus } = useRoomContext();
   const fontSize = useAppSelector((item) => item.settings.fontSize);
-  const language = useAppSelector((item) => item.settings.language);
 
-  const [tooltip, setTooltip] = useState<{
-    text: string;
-    position: { x: number; y: number } | null;
-  }>({
-    text: "",
-    position: null,
-  });
-
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
-
-  const handleCodeChange = React.useCallback(
-    (val: string, viewUpdate: any) => {
-      dispatch(changeCode(val));
-
-      socket.emit("changeCode", {
-        fileId: activeFile._id,
-        code: val,
-        username: username,
-        roomId: roomId,
-      });
-
-      // getting data fro tooltip
-      const cursor = viewUpdate.state.selection.main.head;
-      const line = viewUpdate.state.doc.lineAt(cursor);
-      const cursorX = cursor - line.from;
-      const cursorY = viewUpdate.view.coordsAtPos(cursor).bottom;
-
-      socket.emit("showTooltip", {
-        text: username,
-        position: { x: cursorX * 10, y: cursorY },
-        roomId: roomId,
-      });
-    },
-    [activeFile, username, roomId, dispatch]
+  // Track local content state to prevent unnecessary updates
+  const [localContent, setLocalContent] = useState<string>(
+    activeFile?.content || ""
   );
 
-  // tooltip for code updation
+  // Update local content when active file changes
   useEffect(() => {
-    socket.on("showTooltip", (data: any) => {
-      setTooltip({
-        text: data.text,
-        position: data.position,
-      });
+    if (activeFile?.content !== undefined) {
+      setLocalContent(activeFile.content);
+    }
+  }, [activeFile?._id, activeFile?.content]);
 
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
+  const handleCodeChange = (value: string) => {
+    if (!activeFile) return;
 
-      timeoutRef.current = setTimeout(() => {
-        setTooltip({
-          text: "",
-          position: null,
-        });
-      }, 500);
-    });
+    // Update local state immediately for responsive editing
+    setLocalContent(value);
 
-    return () => {
-      socket.off("showTooltip");
-    };
-  }, []);
+    // Trigger the debounced update function from context
+    updateFileContent(activeFile._id, value, activeFile.roomId);
+  };
+
+  const fileLanguage = activeFile?.language || "javascript";
 
   return (
     <div className="text-gray-900 h-screen" style={{ position: "relative" }}>
+      <div
+        className={`absolute top-2 right-4 z-10 px-3 py-1.5 rounded-md flex items-center gap-1.5 transition-all duration-300`}
+        style={{
+          backgroundColor: "rgba(26, 26, 26, 0.8)",
+          backdropFilter: "blur(4px)",
+          border: `1px solid ${
+            saveStatus === "saved" ? "#00E87B" : "transparent"
+          }`,
+        }}
+      >
+        {saveStatus === "saving" ? (
+          <>
+            <IconLoader2 size={16} className="animate-spin" color="#e2e8f0" />
+            <span className="text-xs text-gray-200">Saving</span>
+          </>
+        ) : saveStatus === "saved" ? (
+          <>
+            <IconCheck size={16} color="#00E87B" />
+            <span className="text-xs text-gray-200">Saved</span>
+          </>
+        ) : (
+          <>
+            <IconCheck size={16} color="#00E87B" />
+            <span className="text-xs text-gray-200">Ready</span>
+          </>
+        )}
+      </div>
+
       <CodeMirror
         className={`h-full`}
-        value={activeFile?.content}
+        value={localContent}
         height="100%"
-        // extensions={[langs[language]()]}
+        extensions={[getLanguageExtension(fileLanguage)()]}
         onChange={handleCodeChange}
         theme={blackTheme}
         style={{
           fontSize: `${fontSize}px`,
         }}
       />
-      {tooltip.position && tooltip.text !== "" && (
-        <Tooltip text={tooltip.text} position={tooltip.position} />
-      )}
     </div>
   );
 };
