@@ -81,7 +81,7 @@ const Header = () => {
   };
 
   return (
-    <div className="flex items-center justify-between container mx-auto py-4 px-4">
+    <div className="flex items-center justify-between container mx-auto py-4 px-4 border-b border-white/10">
       <Link href="/">
         <h1 className="text-2xl font-bold tracking-tighter">
           Code Collab<span className="text-[#00E87B]">.</span>
