@@ -71,6 +71,26 @@ const useSocket = () => {
     };
   }, []);
 
+  // Add room settings update listener
+  useEffect(() => {
+    socket.on("roomSettingsUpdate", (settings: any) => {
+      // Update room settings in the context
+      if (settings.configuration) {
+        setChatEnabled(settings.configuration.chatEnabled);
+      }
+      if (settings.permissions) {
+        setCodeEditPermission(settings.permissions.codeEdit);
+      }
+      if (settings.maxParticipants) {
+        setMaxParticipants(settings.maxParticipants);
+      }
+    });
+
+    return () => {
+      socket.off("roomSettingsUpdate");
+    };
+  }, []);
+
   return socket;
 };
 

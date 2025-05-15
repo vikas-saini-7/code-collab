@@ -86,6 +86,11 @@ io.on("connection", (socket) => {
     io.to(roomId).emit("showTooltip", { text, position });
   });
 
+  // Add new event for room settings updates
+  socket.on("roomSettingsUpdate", ({ roomId, settings }) => {
+    io.to(roomId).emit("roomSettingsUpdate", settings);
+  });
+
   // When a user disconnects, remove them from active users
   socket.on("disconnect", () => {
     const user = activeUsers[socket.id];

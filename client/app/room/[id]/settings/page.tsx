@@ -18,6 +18,7 @@ import { Settings, Users, Code, Loader2 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import axios from "axios";
 import { toast } from "sonner";
+import socket from "@/utils/socket";
 
 const page: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -116,6 +117,12 @@ const page: React.FC = () => {
         updatedSettings,
         { withCredentials: true }
       );
+
+      // Emit socket event for settings update
+      socket.emit("roomSettingsUpdate", {
+        roomId: roomData?.roomId,
+        settings: updatedSettings
+      });
 
       // Update original values after successful save
       setOriginalChatEnabled(chatEnabled);
