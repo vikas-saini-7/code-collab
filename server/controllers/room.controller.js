@@ -238,8 +238,8 @@ exports.joinRoom = async (req, res) => {
       (participant) => participant.user.toString() === userId
     );
     if (isParticipant) {
-      return res.status(400).json({
-        success: false,
+      return res.status(200).json({
+        success: true,
         message: "User is already a participant in this room",
       });
     }
@@ -314,6 +314,48 @@ exports.leaveRoom = async (req, res) => {
     });
   }
 };
+
+// check if user is participant in room
+exports.checkParticipation = async (req, res) => {
+  try {
+    const { roomId } = req.body;
+
+    const userId = req.userId;
+
+    // Validate required fields
+    if (!roomId || !userId) {
+      return res.status(400).json({
+        success: false,
+        message: "Room ID and user ID are required",
+      });
+    }
+
+    // Find the room by ID
+    const room = await Room.findOne({ roomId });
+    if (!room) {
+      return res.status(404).json({
+        success: false,
+        message: "Room not found",
+      });
+    }
+
+    // Check if user is a participant
+    const isParticipant = room.participants.some(
+      (participant) => participant.user.toString() === userId
+    );
+
+    res.status(200).json({
+      success: true,
+      isParticipant,
+    });
+  } catch (error) {
+    console.error("Error checking participation:", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal server error.",
+    });
+  }
+}
 
 // get active rooms by host
 

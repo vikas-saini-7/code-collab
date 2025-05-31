@@ -13,6 +13,7 @@ import socket from "@/utils/socket";
 import { toast } from "sonner";
 import { useSession } from "next-auth/react";
 import { useAppDispatch, useAppSelector } from "@/redux/store";
+import { useRouter } from "next/navigation";
 
 // Define types
 interface User {
@@ -94,6 +95,8 @@ export function RoomContextProvider({
   children: ReactNode;
   roomId: string;
 }) {
+
+  const router = useRouter(); 
   const username = useAppSelector((state) => state.profile.username);
   const [roomData, setRoomData] = useState<RoomData | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
@@ -255,7 +258,7 @@ export function RoomContextProvider({
       });
 
       // Show a toast notification
-      toast.info(`${senderUsername} updated the code`, { duration: 2000 });
+      // toast.info(`${senderUsername} updated the code`, { duration: 2000 });
     };
 
     // Use "change-code" to match the server's emit event name

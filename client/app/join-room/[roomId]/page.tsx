@@ -1,8 +1,5 @@
 "use client";
 import { useEffect, useState } from "react";
-import { useAppDispatch } from "@/redux/store";
-import Link from "next/link";
-import { setRoomId } from "@/redux/reducers/roomReducer";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -89,13 +86,14 @@ export default function Page() {
 
       console.log("Response:", response.data);
       if (response.data.success) {
-        toast.success("Room joined successfully");
         router.push(`/room/${room}`);
       }
       //   return response.data.data;
     } catch (err) {
       console.error("Error Joining room:", err);
-      throw new Error("Failed to Joining room");
+      toast.error(
+        "Error joining room. Please check the room ID and try again."
+      );
     }
   };
 

@@ -11,6 +11,7 @@ router.post("/update-settings", authenticate, RoomController.updateSettings);
 // participant specific endpoints
 router.post("/join", authenticate, RoomController.joinRoom);
 router.post("/leave", authenticate, RoomController.leaveRoom);
+router.post("/check-participation", authenticate, RoomController.checkParticipation);
 
 // profile specific endpoints
 router.get("/active-rooms", authenticate, RoomController.getActiveRooms);

@@ -1,7 +1,7 @@
 "use client";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { ReactNode } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import useSocket from "@/utils/useSocket";
 import SideBar from "@/components/room/SideBar";
 import CodeEditor from "@/components/room/CodeEditor";
@@ -9,27 +9,50 @@ import { RoomContextProvider } from "@/providers/roomContextProvider";
 import LoadingSpinner from "@/components/common/LoadingSpinner";
 import { useSession } from "next-auth/react";
 import EditorHeader from "@/components/room/EditorHeader";
+import axios from "axios";
+import { toast } from "sonner";
 
 export default function layout({ children }: { children: ReactNode }) {
   const pathname = usePathname();
-
+  const router = useRouter();
   const { data: session, status } = useSession();
-
-  // Initialize socket connection
   const socketInstance = useSocket();
 
-  // store
-  const [roomId, setRoomId] = React.useState<string>("");
+  const [roomId, setRoomId] = useState<string>("");
+  const [isCheckingAccess, setIsCheckingAccess] = useState<boolean>(true);
 
+  // check if user is authenticated and has access to the room
   useEffect(() => {
-    const roomIdFromUrl = pathname.split("/")[2];
-    if (roomIdFromUrl && roomIdFromUrl !== roomId) {
-      setRoomId(roomIdFromUrl);
-    }
-  }, []);
+    const checkRoomAccess = async (roomIdFromUrl: string) => {
+      try {
+        setIsCheckingAccess(true);
+        const response = await axios.post(
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/room/check-participation`,
+          { roomId: roomIdFromUrl },
+          { withCredentials: true }
+        );
 
-  if (status === "loading") {
-    return <LoadingSpinner text="Authenticating..." />;
+        // If we get a successful response, user has access
+        setRoomId(roomIdFromUrl);
+        setIsCheckingAccess(false);
+      } catch (error) {
+        console.error("Error checking room access:", error);
+        // Redirect to join room page if not authorized
+        toast.error("You don't have access to this room. Please join first.");
+        router.push(`/join-room/${roomIdFromUrl}`);
+      }
+    };
+
+    const roomIdFromUrl = pathname.split("/")[2];
+    if (roomIdFromUrl && status === "authenticated") {
+      checkRoomAccess(roomIdFromUrl);
+    } else if (status === "authenticated") {
+      setIsCheckingAccess(false);
+    }
+  }, [pathname, status, router]);
+
+  if (status === "loading" || isCheckingAccess) {
+    return <LoadingSpinner text="Loading Room..." />;
   }
 
   if (status === "unauthenticated") {
