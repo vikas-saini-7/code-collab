@@ -97,7 +97,7 @@ const Header = () => {
           How it works
         </Link>
         <Link
-          href="/contact"
+          href="https://vikas-saini.tech/contact"
           className="hover:text-[#00E87B] transition-all duration-300"
         >
           Contact
