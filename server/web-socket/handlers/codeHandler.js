@@ -1,8 +1,9 @@
 const registerCodeHandlers = (io, socket) => {
-  // When user changes code in the editor
-  socket.on("changeCode", ({ fileId, code, username, roomId }) => {
-    console.log(fileId, code, username, roomId);
-    // io.to(roomId).emit("changeCode", { fileId, code, username });
+   // When user changes code in the editor
+  socket.on("change-code", ({ fileId, code, username, roomId }) => {
+    console.log(`Code change in room ${roomId}, file ${fileId} by ${username}`);
+    // Broadcast the code change to all users in the room including the sender
+    io.emit("change-code", { fileId, code, username });
   });
 };
 

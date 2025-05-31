@@ -9,6 +9,10 @@ import React, {
 import axios from "axios";
 import LoadingSpinner from "@/components/common/LoadingSpinner";
 import { debounce } from "lodash";
+import socket from "@/utils/socket";
+import { toast } from "sonner";
+import { useSession } from "next-auth/react";
+import { useAppDispatch, useAppSelector } from "@/redux/store";
 
 // Define types
 interface User {
@@ -90,6 +94,7 @@ export function RoomContextProvider({
   children: ReactNode;
   roomId: string;
 }) {
+  const username = useAppSelector((state) => state.profile.username);
   const [roomData, setRoomData] = useState<RoomData | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -157,7 +162,7 @@ export function RoomContextProvider({
 
   // Update file content and trigger auto-save
   const updateFileContent = useCallback(
-    (fileId: string, content: string, roomId: string) => {
+    (fileId: string, content: string, roomIdMongo: string) => {
       // Update the local state immediately
       setRoomData((prevRoomData) => {
         if (!prevRoomData) return null;
@@ -177,8 +182,16 @@ export function RoomContextProvider({
         return { ...prevRoomData, files: updatedFiles };
       });
 
+      // Emit code changes to all users in the room
+      socket.emit("change-code", {
+        fileId,
+        code: content,
+        username,
+        roomId: roomId,
+      });
+
       // Trigger the debounced save
-      debouncedSave(fileId, content, roomId);
+      debouncedSave(fileId, content, roomIdMongo);
     },
     [debouncedSave, activeFile]
   );
@@ -189,6 +202,70 @@ export function RoomContextProvider({
       fetchRoomData(roomId);
     }
   }, [roomId]);
+
+  useEffect(() => {
+    if (!socket || !roomId) {
+      toast.error("Socket connection or room ID is not available");
+      return;
+    }
+
+    const handleCodeChange = ({
+      fileId,
+      code,
+      username: senderUsername,
+    }: {
+      fileId: string;
+      code: string;
+      username: string;
+    }) => {
+
+      const currentUsername = username; 
+
+      if (senderUsername === currentUsername) {
+        return;
+      }
+
+      console.log("Updating code from remote user:", senderUsername);
+
+      // Update local state with received code changes
+      setRoomData((prevRoomData) => {
+        if (!prevRoomData) {
+          console.log("No previous room data");
+          return null;
+        }
+
+        const fileExists = prevRoomData.files.some((f) => f._id === fileId);
+        if (!fileExists) {
+          return prevRoomData;
+        }
+
+        const updatedFiles = prevRoomData.files.map((file) => {
+          if (file._id === fileId) {
+            return { ...file, content: code };
+          }
+          return file;
+        });
+
+        // If this is the active file, update it as well
+        if (activeFile && activeFile._id === fileId) {
+          setActiveFile({ ...activeFile, content: code });
+        }
+
+        return { ...prevRoomData, files: updatedFiles };
+      });
+
+      // Show a toast notification
+      toast.info(`${senderUsername} updated the code`, { duration: 2000 });
+    };
+
+    // Use "change-code" to match the server's emit event name
+    socket.on("change-code", handleCodeChange);
+
+    // Clean up the event listener on unmount
+    return () => {
+      socket.off("change-code", handleCodeChange);
+    };
+  }, [socket, roomId, activeFile, username]);
 
   return (
     <RoomContext.Provider

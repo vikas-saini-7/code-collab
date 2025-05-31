@@ -1,18 +1,24 @@
 import { io } from "socket.io-client";
 import { toast } from "sonner";
 
-const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:9000";
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:9000";
+const socket = io(BASE_URL, {
+  reconnectionAttempts: 5,
+  reconnectionDelay: 1000,
+});
 
-const socket = io(BASE_URL);
+// Connection event handlers
+socket.on("connect", () => {
+  console.log("Connected to code collaboration server");
+});
 
-// socket.on("connect", () => {
-//   toast.success("Connected to backend");
-//   console.log("Connected to backend");
-// });
+socket.on("connect_error", (error) => {
+  console.error("Connection error:", error);
+  toast.error("Failed to connect to collaboration server");
+});
 
-// socket.on("connect_error", (error) => {
-//   toast.error("Error in connecting to backend");
-//   console.error("Connection error:", error);
-// });
+socket.on("disconnect", () => {
+  console.log("Disconnected from code collaboration server");
+});
 
 export default socket;
