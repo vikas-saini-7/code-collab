@@ -5,7 +5,7 @@ const registerChatHandlers = require("./handlers/chatHandler");
 const registerCodeHandlers = require("./handlers/codeHandler");
 const registerUiHandlers = require("./handlers/uiHandler");
 
-const initializeSocket = (server) => {
+const initializeWebSocket = (server) => {
   const io = socketIo(server, {
     cors: {
       origin: [
@@ -37,4 +37,4 @@ const initializeSocket = (server) => {
   return io;
 };
 
-module.exports = initializeSocket;
+module.exports = initializeWebSocket;

@@ -7,7 +7,7 @@ const app = express();
 const apiRoutes = require("./routes/api.js");
 const server = http.createServer(app);
 const connectDB = require("./utils/connectDB.js");
-const initializeSocket = require("./web-socket");
+const initializeWebSocket = require("./web-socket");
 
 // Enable CORS for required origins
 app.use(
@@ -28,8 +28,8 @@ app.use(cookieParser());
 // this be used for frontend requests
 app.use("/api", apiRoutes);
 
-// Initialize Socket.IO
-initializeSocket(server);
+// Realtime updates via socket.io
+initializeWebSocket(server);
 
 const port = process.env.PORT || 9000;
 connectDB();
