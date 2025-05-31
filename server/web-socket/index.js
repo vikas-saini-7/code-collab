@@ -31,6 +31,7 @@ const initializeWebSocket = (server) => {
     // Handle disconnection
     socket.on("disconnect", () => {
       removeUser(socket.id, io);
+      console.log("A user disconneced:", socket.id);
     });
   });
 
