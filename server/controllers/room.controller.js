@@ -196,16 +196,6 @@ exports.updateSettings = async (req, res) => {
       room.scheduledAt = new Date(scheduledAt);
     }
     await room.save();
-    
-    // Emit room settings update event
-    const io = require('../server').io;
-    io.to(roomId).emit("roomSettingsUpdate", {
-      configuration: room.configuration,
-      maxParticipants: room.maxParticipants,
-      permissions: room.permissions,
-      description: room.description,
-      scheduledAt: room.scheduledAt
-    });
 
     res.status(200).json({
       success: true,
