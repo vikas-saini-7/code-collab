@@ -1,7 +1,6 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
 import socket from "@/utils/socket";
-import { setMessages } from "@/redux/reducers/roomReducer";
 import { useAppDispatch, useAppSelector } from "@/redux/store";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
