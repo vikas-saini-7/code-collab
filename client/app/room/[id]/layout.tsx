@@ -1,10 +1,7 @@
 "use client";
 import React, { useEffect } from "react";
 import { ReactNode } from "react";
-import { useAppDispatch, useAppSelector } from "@/redux/store";
 import socket from "@/utils/socket";
-import { setUsername } from "@/redux/reducers/userReducer";
-import { setRoomId } from "@/redux/reducers/roomReducer";
 import { usePathname } from "next/navigation";
 import useSocket from "@/utils/useSocket";
 import SideBar from "@/components/room/SideBar";
@@ -20,7 +17,6 @@ export default function layout({ children }: { children: ReactNode }) {
   const { data: session, status } = useSession();
 
   // store
-  const username = useAppSelector((item) => item.user.username);
   const [roomId, setRoomId] = React.useState<string>("");
 
   useEffect(() => {

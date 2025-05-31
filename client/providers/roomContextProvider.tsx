@@ -95,7 +95,7 @@ export function RoomContextProvider({
   const [error, setError] = useState<string | null>(null);
   const [activeFile, setActiveFile] = useState<File | null>(null);
   const [saveStatus, setSaveStatus] = useState<"saved" | "saving" | "idle">(
-    "idle"
+    "saved"
   );
 
   const fetchRoomData = async (roomId: string) => {

@@ -5,7 +5,6 @@ import { useRoomContext } from "@/providers/roomContextProvider";
 
 const page: React.FC = () => {
   // store
-  const activeUsers = useAppSelector((item) => item.room.activeUsers);
 
   const { roomData, loading, error } = useRoomContext();
 
@@ -23,7 +22,6 @@ const page: React.FC = () => {
               <span className="absolute top-0 -right-1 w-[7px] h-[7px] rounded-full bg-green-500"></span>
             </span>
             <p className="text-xs">{item?.user?.fullName}</p>
-            {/* <p className="text-xs">{item?.user?.username}</p> */}
           </div>
         ))}
       </div>
