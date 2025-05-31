@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "@/redux/store";
-import { setRoomId } from "@/redux/reducers/roomReducer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useSession } from "next-auth/react";
