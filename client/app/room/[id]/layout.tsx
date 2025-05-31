@@ -1,7 +1,6 @@
 "use client";
 import React, { useEffect } from "react";
 import { ReactNode } from "react";
-import socket from "@/utils/socket";
 import { usePathname } from "next/navigation";
 import useSocket from "@/utils/useSocket";
 import SideBar from "@/components/room/SideBar";
@@ -15,6 +14,9 @@ export default function layout({ children }: { children: ReactNode }) {
   const pathname = usePathname();
 
   const { data: session, status } = useSession();
+
+  // Initialize socket connection
+  const socketInstance = useSocket();
 
   // store
   const [roomId, setRoomId] = React.useState<string>("");

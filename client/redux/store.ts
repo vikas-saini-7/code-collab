@@ -2,10 +2,13 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 import settingsReducer from "./reducers/settingsReducer";
+import profileReducer from "./reducers/profileReducer";
 
 export const store = configureStore({
   reducer: {
     settings: settingsReducer,
+
+    profile: profileReducer,
   },
 });
 
