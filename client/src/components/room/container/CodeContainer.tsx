@@ -162,9 +162,6 @@ const CodeContainer: React.FC<CodeContainerProps> = ({
 
   useEffect(() => {
     if (roomId && isConnected) {
-      // Join the room when the component mounts
-      joinRoom(roomId);
-
       // Listen for code updates from other users
       if (socket) {
         socket.on("code-update", ({ fileId, code: updatedCode, sender }) => {

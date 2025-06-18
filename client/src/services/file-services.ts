@@ -22,7 +22,6 @@ export const saveFile = async (
 export const fetchFiles = async (roomId: string) => {
   try {
     const { status, data } = await axios.get(`/api/rooms/${roomId}/files`);
-    console.log("Fetched files:", data);
     return { data, status };
   } catch (error) {
     console.error("Error fetching files:", error);
@@ -30,7 +29,7 @@ export const fetchFiles = async (roomId: string) => {
   }
 };
 
-// delete file 
+// delete file
 export const deleteFile = async (fileId: string) => {
   try {
     const { status, data } = await axios.delete(`/api/files/${fileId}`);
@@ -41,7 +40,7 @@ export const deleteFile = async (fileId: string) => {
   }
 };
 
-// fetch file 
+// fetch file
 export const fetchFile = async (fileId: string) => {
   try {
     const { status, data } = await axios.get(`/api/files/${fileId}`);
@@ -52,11 +51,8 @@ export const fetchFile = async (fileId: string) => {
   }
 };
 
-// updateFileContent 
-export const updateFileContent = async (
-  fileId: string,
-  content: string
-) => {
+// updateFileContent
+export const updateFileContent = async (fileId: string, content: string) => {
   try {
     const { status, data } = await axios.patch(`/api/files/${fileId}`, {
       content,

@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   ResizableHandle,
   ResizablePanel,
@@ -18,11 +18,13 @@ import { useSession } from "next-auth/react";
 import LoadingSpinner from "@/components/common/LoadingSpinner";
 import Link from "next/link";
 import { useParams } from "next/navigation";
+import { useSocket } from "@/providers/SocketProvider";
 
 const page = () => {
   const params = useParams();
   const roomId = params.roomId as string;
   const { data: session, status } = useSession();
+  const { socket, isConnected, joinRoom } = useSocket();
 
   const [selectedFile, setSelectedFile] = useState<string | null>(null);
 
@@ -48,6 +50,13 @@ const page = () => {
     }
     console.log("Selected file ID:", fileId);
   };
+
+  useEffect(() => {
+    if (roomId && isConnected) {
+      // Join the room when the component mounts
+      joinRoom(roomId);
+    }
+  }, [roomId, isConnected, socket, session?.user?.id, joinRoom]);
 
   if (status === "loading") {
     return (
@@ -85,7 +94,7 @@ const page = () => {
       >
         {/* Tab Content  */}
         <ResizablePanel defaultSize={25}>
-          <div className="p-4">
+          <div className="">
             {activeTab === "files" && (
               <FilesContent onChangeSelectedFile={handleSelectedFileChange} />
             )}

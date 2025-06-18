@@ -31,15 +31,18 @@ io.on("connection", (socket) => {
   // Handle code changes
   socket.on("code-change", ({ roomId, fileId, code, sender }) => {
     // Broadcast the code changes to other clients in the same room
-    console.log(
-      `Code change in room ${roomId} for file ${fileId} by ${sender}`
-    );
     socket.to(roomId).emit("code-update", { fileId, code, sender });
   });
 
   // Handle cursor position
   socket.on("cursor-move", ({ roomId, fileId, position, sender }) => {
     socket.to(roomId).emit("cursor-update", { fileId, position, sender });
+  });
+
+  // handle message
+  socket.on("message", ({ roomId, message }) => {
+    // console.log(`Message from ${sender} in room ${roomId}: ${message}`);
+    socket.to(roomId).emit("new-message", { message });
   });
 
   socket.on("disconnect", () => {

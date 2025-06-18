@@ -20,6 +20,7 @@ interface SocketContextType {
     position: any;
     sender: string;
   }) => void;
+  emitMessage: (data: { roomId: string; message: any }) => void;
 }
 
 const SocketContext = createContext<SocketContextType>({
@@ -28,6 +29,7 @@ const SocketContext = createContext<SocketContextType>({
   joinRoom: () => {},
   emitCodeChange: () => {},
   emitCursorMove: () => {},
+  emitMessage: () => {},
 });
 
 export const useSocket = () => useContext(SocketContext);
@@ -97,9 +99,22 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
+  const emitMessage = (data: { roomId: string; message: any }) => {
+    if (socket && isConnected) {
+      socket.emit("message", data);
+    }
+  };
+
   return (
     <SocketContext.Provider
-      value={{ socket, isConnected, joinRoom, emitCodeChange, emitCursorMove }}
+      value={{
+        socket,
+        isConnected,
+        joinRoom,
+        emitCodeChange,
+        emitCursorMove,
+        emitMessage,
+      }}
     >
       {children}
     </SocketContext.Provider>

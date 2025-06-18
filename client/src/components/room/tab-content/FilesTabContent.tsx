@@ -63,7 +63,7 @@ const FilesContent: React.FC<FilesContentProps> = ({
   }, [roomId]);
 
   return (
-    <div>
+    <div className="p-4">
       <div className="flex items-center justify-between mb-4">
         <h3>Files</h3>
         <Button variant="ghost" size="sm" onClick={toggleCreateFileVisibility}>

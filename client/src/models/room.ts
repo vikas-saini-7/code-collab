@@ -1,31 +1,32 @@
 import mongoose from "mongoose";
 
 interface IRoom {
-    roomId: string;
-    name: string;
-    createdBy: mongoose.Types.ObjectId;
-    status: string;
-    files?: mongoose.Types.ObjectId[];
+  roomId: string;
+  name: string;
+  createdBy: mongoose.Types.ObjectId;
+  status: string;
+  files?: mongoose.Types.ObjectId[];
+  messages?: mongoose.Types.ObjectId[];
 }
 
 // Function to generate ID in format xxx-xxx-xxx
 function generateRoomId() {
-  const characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
-  let result = '';
-  
+  const characters = "abcdefghijklmnopqrstuvwxyz0123456789";
+  let result = "";
+
   // Generate three groups of three characters
   for (let group = 0; group < 3; group++) {
     for (let i = 0; i < 3; i++) {
       const randomIndex = Math.floor(Math.random() * characters.length);
       result += characters.charAt(randomIndex);
     }
-    
+
     // Add hyphen after first and second group
     if (group < 2) {
-      result += '-';
+      result += "-";
     }
   }
-  
+
   return result;
 }
 
@@ -35,7 +36,7 @@ const RoomSchema = new mongoose.Schema<IRoom>(
       type: String,
       required: true,
       unique: true,
-      default: generateRoomId
+      default: generateRoomId,
     },
     name: {
       type: String,
@@ -57,6 +58,12 @@ const RoomSchema = new mongoose.Schema<IRoom>(
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "File",
+      },
+    ],
+    messages: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Message",
       },
     ],
   },
