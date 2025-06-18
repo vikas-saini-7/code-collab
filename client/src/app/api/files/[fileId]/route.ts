@@ -4,9 +4,11 @@ import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/connectDB";
 import File from "@/models/file";
 
+type Params = Promise<{ fileId: string }>;
+
 export async function GET(
-  req: NextRequest,
-  { params }: { params: { fileId: string } }
+  request: NextRequest,
+  segmentData: { params: Params }
 ) {
   try {
     // Get session from next-auth
@@ -19,7 +21,10 @@ export async function GET(
     // Connect to database
     await connectDB();
 
-    const file = await File.findById(params.fileId);
+    const params = await segmentData.params;
+    const fileId = params.fileId;
+
+    const file = await File.findById(fileId);
 
     return NextResponse.json(file, { status: 200 });
   } catch (err) {
@@ -32,8 +37,8 @@ export async function GET(
 }
 
 export async function PATCH(
-  req: NextRequest,
-  { params }: { params: { fileId: string } }
+  request: NextRequest,
+  segmentData: { params: Params }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -44,7 +49,10 @@ export async function PATCH(
 
     await connectDB();
 
-    const { content } = await req.json();
+    const params = await segmentData.params;
+    const fileId = params.fileId;
+
+    const { content } = await request.json();
 
     if (!content) {
       return NextResponse.json(
@@ -54,7 +62,7 @@ export async function PATCH(
     }
 
     // Check if the file exists
-    const file = await File.findById(params.fileId);
+    const file = await File.findById(fileId);
     if (!file) {
       return NextResponse.json({ error: "File not found" }, { status: 404 });
     }
@@ -81,11 +89,10 @@ export async function PATCH(
   }
 }
 
-
-// delete file 
+// delete file
 export async function DELETE(
-  req: NextRequest,
-  { params }: { params: { fileId: string } }
+  request: NextRequest,
+  segmentData: { params: Params }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -96,20 +103,26 @@ export async function DELETE(
 
     await connectDB();
 
+    const params = await segmentData.params;
+    const fileId = params.fileId;
+
     // Check if the file exists
-    const file = await File.findById(params.fileId);
+    const file = await File.findById(fileId);
     if (!file) {
       return NextResponse.json({ error: "File not found" }, { status: 404 });
     }
     // Delete the file
-    const deletedFile = await File.findByIdAndDelete(params.fileId);
+    const deletedFile = await File.findByIdAndDelete(fileId);
     if (!deletedFile) {
       return NextResponse.json(
         { error: "Failed to delete file" },
         { status: 500 }
       );
     }
-    return NextResponse.json({ message: "File deleted successfully" }, { status: 200 });
+    return NextResponse.json(
+      { message: "File deleted successfully" },
+      { status: 200 }
+    );
   } catch (err) {
     console.error("Failed to delete file:", err);
     return NextResponse.json(
