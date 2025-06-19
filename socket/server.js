@@ -18,13 +18,28 @@ const io = new Server(server, {
   },
 });
 
+const roomUsers = new Map();
+
 // Socket.IO connection handling
 io.on("connection", (socket) => {
   console.log("Client connected:", socket.id);
 
   // Handle joining a room
-  socket.on("join-room", (roomId) => {
+  socket.on("join-room", ({ roomId, user }) => {
     socket.join(roomId);
+    socket.roomId = roomId;
+    socket.user = user;
+
+    // Add user to room
+    if (!roomUsers.has(roomId)) {
+      roomUsers.set(roomId, new Map());
+    }
+    roomUsers.get(roomId).set(socket.id, user);
+
+    // Broadcast updated users list to all clients in the room
+    const usersInRoom = Array.from(roomUsers.get(roomId).values());
+    io.to(roomId).emit("collaborators-update", usersInRoom);
+
     console.log(`Socket ${socket.id} joined room: ${roomId}`);
   });
 
@@ -47,6 +62,20 @@ io.on("connection", (socket) => {
 
   socket.on("disconnect", () => {
     console.log("Client disconnected:", socket.id);
+
+    // Remove user from room tracking
+    if (socket.roomId && roomUsers.has(socket.roomId)) {
+      roomUsers.get(socket.roomId).delete(socket.id);
+
+      // If room is empty, remove it
+      if (roomUsers.get(socket.roomId).size === 0) {
+        roomUsers.delete(socket.roomId);
+      } else {
+        // Broadcast updated user list
+        const usersInRoom = Array.from(roomUsers.get(socket.roomId).values());
+        io.to(socket.roomId).emit("collaborators-update", usersInRoom);
+      }
+    }
   });
 });
 

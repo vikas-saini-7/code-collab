@@ -1,8 +1,14 @@
 "use client";
 
+import { useSession } from "next-auth/react";
 import React, { createContext, useContext, useEffect, useState } from "react";
 import io, { Socket } from "socket.io-client";
 import { toast } from "sonner";
+
+interface IUser {
+  _id: string;
+  name: string;
+}
 
 interface SocketContextType {
   socket: Socket | null;
@@ -21,6 +27,7 @@ interface SocketContextType {
     sender: string;
   }) => void;
   emitMessage: (data: { roomId: string; message: any }) => void;
+  collaborators: IUser[];
 }
 
 const SocketContext = createContext<SocketContextType>({
@@ -30,6 +37,7 @@ const SocketContext = createContext<SocketContextType>({
   emitCodeChange: () => {},
   emitCursorMove: () => {},
   emitMessage: () => {},
+  collaborators: [],
 });
 
 export const useSocket = () => useContext(SocketContext);
@@ -37,6 +45,8 @@ export const useSocket = () => useContext(SocketContext);
 export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
   const [socket, setSocket] = useState<Socket | null>(null);
   const [isConnected, setIsConnected] = useState(false);
+  const [collaborators, setCollaborators] = useState<IUser[]>([]);
+  const { data: session } = useSession();
 
   useEffect(() => {
     // Connect to the Socket.io server
@@ -72,8 +82,14 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
   }, []);
 
   const joinRoom = (roomId: string) => {
-    if (socket && isConnected) {
-      socket.emit("join-room", roomId);
+    if (socket && isConnected && session?.user) {
+      socket.emit("join-room", {
+        roomId,
+        user: {
+          _id: session.user.id,
+          name: session.user.name || "Anonymous",
+        },
+      });
     }
   };
 
@@ -105,6 +121,18 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
+  useEffect(() => {
+    if (socket) {
+      socket.on("collaborators-update", (users) => {
+        setCollaborators(users);
+      });
+
+      return () => {
+        socket.off("collaborators-update");
+      };
+    }
+  }, [socket]);
+
   return (
     <SocketContext.Provider
       value={{
@@ -114,6 +142,7 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
         emitCodeChange,
         emitCursorMove,
         emitMessage,
+        collaborators,
       }}
     >
       {children}

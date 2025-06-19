@@ -30,7 +30,7 @@ export default function ChatScreen() {
   const userId = session?.user?.id;
   const userName = session?.user?.name;
 
-  const { socket, isConnected, joinRoom, emitMessage } = useSocket();
+  const { socket, isConnected, joinRoom, emitMessage, collaborators } = useSocket();
 
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState("");
@@ -110,7 +110,7 @@ export default function ChatScreen() {
             {roomId}
           </h3>
           <p className="text-[10px] text-muted-foreground flex items-center gap-1">
-            <IconPointFilled size={16} className="text-green-500" />7 people
+            <IconPointFilled size={16} className="text-green-500" />{collaborators.length || 0} people
             online
           </p>
         </div>
