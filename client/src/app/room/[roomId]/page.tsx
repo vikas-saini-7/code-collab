@@ -19,6 +19,7 @@ import LoadingSpinner from "@/components/common/LoadingSpinner";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useSocket } from "@/providers/SocketProvider";
+import ShareModalAtStart from "@/components/room/ShareModalAtStart";
 
 const page = () => {
   const params = useParams();
@@ -117,6 +118,7 @@ const page = () => {
           </div>
         </ResizablePanel>
       </ResizablePanelGroup>
+      <ShareModalAtStart />
     </div>
   );
 };
