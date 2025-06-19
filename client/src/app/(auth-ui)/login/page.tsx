@@ -42,9 +42,9 @@ export default function page() {
     // Add your authentication logic here
     const res = await loginUser(formData.email, formData.password);
     if (res?.ok) {
-      toast.success("Registration successful! Please log in.");
+      toast.success("Login successful, Happy Collaborating!");
       setFormData({ email: "", password: "" });
-      router.push("/room/roomId");
+      router.push("/me");
     } else {
       toast.error("Registration failed. Please try again.");
     }

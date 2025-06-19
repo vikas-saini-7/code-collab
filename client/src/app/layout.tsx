@@ -21,7 +21,7 @@ export default function RootLayout({
       <body className={`${bricolage.className} antialiased dark`}>
         <GlobalProvider>
           {children}
-          <Toaster />
+          <Toaster theme="dark" />
         </GlobalProvider>
       </body>
     </html>

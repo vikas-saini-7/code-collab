@@ -105,7 +105,7 @@ export default function ChatScreen() {
           </AvatarFallback>
         </Avatar>
         <div>
-          <h3 className="text-sm font-medium">
+          <h3 className="text-sm font-medium whitespace-nowrap">
             <span className="text-white/50">Room/ </span>
             {roomId}
           </h3>

@@ -26,7 +26,7 @@ const RoomSideMenu: React.FC<RoomSideMenuProps> = ({
   return (
     <TooltipProvider>
       <div className="flex flex-col h-screen w-16 border-r">
-        <div className="flex flex-col items-center py-2 space-y-4">
+        <div className="flex flex-col items-center py-4 space-y-4">
           {menuItems.map((item, index) => (
             <Tooltip key={index} delayDuration={300}>
               <TooltipTrigger asChild>

@@ -14,7 +14,7 @@ const CollaboratorsContent = () => {
   return (
     <div className="h-full flex flex-col">
       <div className="flex items-center justify-between p-4 border-b">
-        <h2 className="text-sm font-medium">
+        <h2 className="font-medium">
           Collaborators ({collaborators?.length || 0})
         </h2>
       </div>
@@ -39,7 +39,7 @@ const CollaboratorsContent = () => {
                 </Avatar>
 
                 <div className="flex-1 flex items-center justify-between">
-                  <p className="text-sm">
+                  <p className="text-sm capitalize">
                     {user.name}
                     {user._id === currentUserId && (
                       <span className="text-xs text-muted-foreground ml-1">
