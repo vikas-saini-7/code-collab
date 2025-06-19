@@ -101,7 +101,7 @@ const FilesContent: React.FC<FilesContentProps> = ({
 
         {/* loading state  */}
         {files.length === 0 && !loading && !createFileVisible && (
-          <div>No files found in room {roomId}</div>
+          <div>No files. Presss + icon to create one</div>
         )}
 
         {/* create new file  */}

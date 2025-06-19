@@ -80,7 +80,7 @@ const SettingsTabContent = () => {
           </AccordionItem> */}
 
           <AccordionItem value="account">
-            <AccordionTrigger className="no-underline hover:no-underline">
+            <AccordionTrigger className="no-underline hover:no-underline cursor-pointer">
               Account
             </AccordionTrigger>
             <AccordionContent>
