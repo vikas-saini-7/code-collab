@@ -20,7 +20,6 @@ Add before and after screenshots for UI changes.
 - [ ] I tested my changes locally
 - [ ] I followed the code style and structure
 - [ ] I added comments where needed
-- [ ] I updated related documentation if necessary
 
 ## Notes for the Reviewer
 
