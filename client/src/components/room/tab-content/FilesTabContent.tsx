@@ -8,26 +8,11 @@ import { IFile } from "@/types/types";
 import { fetchFiles } from "@/services/file-services";
 import { Skeleton } from "@/components/ui/skeleton";
 
-const initialFiles: IFile[] = [
-  {
-    _id: "1",
-    name: "example.js",
-    content: "console.log('Hello, World!');",
-    language: "javascript",
-  },
-  {
-    _id: "2",
-    name: "example.py",
-    content: "print('Hello, World!')",
-    language: "python",
-  },
-];
-
-interface FilesContentProps {
+interface FilesTabContentProps {
   onChangeSelectedFile: (fileId: string) => void;
 }
 
-const FilesContent: React.FC<FilesContentProps> = ({
+const FilesTabContent: React.FC<FilesTabContentProps> = ({
   onChangeSelectedFile,
 }) => {
   const { roomId } = useParams();
@@ -116,4 +101,4 @@ const FilesContent: React.FC<FilesContentProps> = ({
   );
 };
 
-export default FilesContent;
+export default FilesTabContent;

@@ -52,7 +52,7 @@ const ShareModalAtStart = () => {
             <Button
               variant="ghost"
               size="icon"
-              className="h-8 w-8 absolute top-2 right-2"
+              className="h-8 w-8 absolute top-2 right-2 cursor-pointer"
               onClick={() => setIsVisible(false)}
             >
               <X className="h-4 w-4" />
@@ -72,7 +72,7 @@ const ShareModalAtStart = () => {
                   size="icon"
                   onClick={copyToClipboard}
                   className={cn(
-                    "transition-all",
+                    "transition-all cursor-pointer",
                     isCopied ? "bg-green-500 text-white hover:bg-green-600" : ""
                   )}
                 >

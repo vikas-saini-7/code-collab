@@ -6,11 +6,8 @@ import {
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
 import RoomSideMenu from "@/components/room/RoomSideMenu";
-import { File, MessageCircle, Users, Video } from "lucide-react";
+import { File, MessageCircle, Phone, Users, Video } from "lucide-react";
 import FilesContent from "@/components/room/tab-content/FilesTabContent";
-import ChatContent from "@/components/room/tab-content/ChatTabContent";
-import VideochatContent from "@/components/room/tab-content/VideochatTabContent";
-import CollaboratorsContent from "@/components/room/tab-content/CollaboratorsTabContent";
 import SettingsContent from "@/components/room/tab-content/SettingsTabContent";
 import VideoContainer from "@/components/room/container/VideoContainer";
 import CodeContainer from "@/components/room/container/CodeContainer";
@@ -20,6 +17,10 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useSocket } from "@/providers/SocketProvider";
 import ShareModalAtStart from "@/components/room/ShareModalAtStart";
+import CallingTabContent from "@/components/room/tab-content/CallingTabContent";
+import ChatTabContent from "@/components/room/tab-content/ChatTabContent";
+import VideochatTabContent from "@/components/room/tab-content/VideochatTabContent";
+import CollaboratorsTabContent from "@/components/room/tab-content/CollaboratorsTabContent";
 
 const page = () => {
   const params = useParams();
@@ -35,7 +36,8 @@ const page = () => {
   const menuItems = [
     { icon: File, label: "Files", tab: "files" },
     { icon: MessageCircle, label: "Chat", tab: "chat" },
-    { icon: Video, label: "Video Chat", tab: "video" },
+    { icon: Phone, label: "Calling", tab: "calling" },
+    { icon: Video, label: "Video Call", tab: "video" },
     { icon: Users, label: "Collaborators", tab: "collaborators" },
   ];
 
@@ -99,9 +101,10 @@ const page = () => {
             {activeTab === "files" && (
               <FilesContent onChangeSelectedFile={handleSelectedFileChange} />
             )}
-            {activeTab === "chat" && <ChatContent />}
-            {activeTab === "video" && <VideochatContent />}
-            {activeTab === "collaborators" && <CollaboratorsContent />}
+            {activeTab === "chat" && <ChatTabContent />}
+            {activeTab === "calling" && <CallingTabContent />}
+            {activeTab === "video" && <VideochatTabContent />}
+            {activeTab === "collaborators" && <CollaboratorsTabContent />}
             {activeTab === "settings" && <SettingsContent />}
           </div>
         </ResizablePanel>

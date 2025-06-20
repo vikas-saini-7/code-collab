@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { IconUser } from "@tabler/icons-react";
 
-const CollaboratorsContent = () => {
+const CollaboratorsTabContent = () => {
   const { collaborators } = useSocket();
   const { data: session } = useSession();
   const currentUserId = session?.user?.id;
@@ -67,4 +67,4 @@ const CollaboratorsContent = () => {
   );
 };
 
-export default CollaboratorsContent;
+export default CollaboratorsTabContent;
