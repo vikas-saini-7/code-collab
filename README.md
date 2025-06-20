@@ -1,33 +1,64 @@
-# Code Collaboration Platform
+# Code Collab
+
+Code Collab is a real-time code collaboration platform where developers can edit code, chat, and (soon) video call in shared project rooms.
+
+In Simple <b>Code Collab is Google Meet but for Code.</b>
+
+<!-- ---
+
+## Live Demo
+
+Visit the live app here:
+[https://realtime-code-collab.vercel.app](https://realtime-code-collab.vercel.app) -->
+
+---
 
 ## Overview
 
-This platform enables real-time collaborative coding with multiple users in shared rooms. Built with Next.js, MongoDB, and Socket.io, it provides a seamless development environment for team programming sessions.
+Code Collab enables multiple developers to work on code files together in real time.  
+It removes the need for constant pushing, pulling, or resolving merge conflicts.
 
-## Problem Solved
+This tool is ideal for:
 
-Traditional development workflows require constant pushing, pulling, and merging of code, creating bottlenecks in team productivity. This platform eliminates these inefficiencies by:
+- Pair programming
+- Developer interviews
+- Remote learning
+- Learning & teaching code
 
-- Enabling simultaneous editing by multiple developers
-- Providing instant visualization of changes to all team members
-- Facilitating communication directly within the coding environment
-- Removing the need for constant version control operations during collaborative sessions
+---
 
 ## Key Features
 
-- **Real-time Code Editing**: Multiple users can edit code simultaneously
-- **Room-based Collaboration**: Create and join dedicated project rooms
-- **File Management**: Create, edit, and organize files within rooms
-- **Integrated Communication**: Chat and video communication tools
-- **User Authentication**: Secure login and room access control
-- **Automatic Synchronization**: All changes instantly reflected across all users
+- Room based collaboration
+- Real-time code editing using Socket.IO
+- Room-based project collaboration
+- Live chat between room participants
+- Audio and video calling (coming soon using Socket.io & WebRTC)
+- Automatic syncing of code and files across all users in room
+
+---
 
 ## Tech Stack
 
-- Frontend: Next.js 14 with App Router
-- Database: MongoDB
-- Real-time: Socket.io
-- Authentication: NextAuth.js
-- Styling: Tailwind CSS with Shadcn UI components
+| Category       | Technology                                    |
+| -------------- | --------------------------------------------- |
+| Frontend       | Next.js (App Router), Tailwind CSS, Shadcn UI |
+| Backend        | Node.js, Express.js                           |
+| Database       | MongoDB (Mongoose)                            |
+| Authentication | NextAuth.js                                   |
+| Real-Time      | Socket.IO, WebRTC                             |
+| Code Editor    | CodeMirror                                    |
 
-Visit [https://realtime-code-collab.vercel.app](https://realtime-code-collab.vercel.app) to start collaborating!
+---
+
+## Contributors
+
+Thanks to these amazing people:
+
+- [Vikas Saini](https://github.com/vikas-saini-7) - Creator & Maintainer
+
+Want to contribute? [Read the guide](./CONTRIBUTING.md)
+
+## License
+
+This project is open source and available under the MIT License.
