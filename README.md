@@ -1,7 +1,7 @@
-<p align="center">
-  <img src="app/src/assets/logo.png" alt="Code Collab Logo" width="120" style="vertical-align: middle; margin-right: 10px;"/>
-  <span style="font-size: 2.5rem; font-weight: bold; vertical-align: middle;">Code Collab</span>
-</p>
+<div style="display: flex; align-items: center; justify-content: center; margin-bottom: 20px;">
+  <img src="app/src/assets/logo.png" alt="Code Collab Logo" width="120" style="margin-right: 20px;"/>
+  <h1 style="margin: 0;">Code Collab</h1>
+</div>
 
 Code Collab is a real-time code collaboration platform where collaborators can edit code, chat, and (soon) video call in shared project rooms.
 
