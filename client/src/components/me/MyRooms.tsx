@@ -31,18 +31,15 @@ const MyRooms = () => {
 
   const handleGetRoom = async () => {
     setIsLoading(true);
-    try {
-      const res = await getRooms(session?.user?.id || "");
-      if (res?.status === 200) {
-        setRooms(res.data);
-      } else {
-        console.error("Failed to fetch rooms");
-      }
-    } catch (error) {
-      console.error("Error fetching rooms:", error);
-    } finally {
-      setIsLoading(false);
+
+    const res = await getRooms(session?.user?.id || "");
+
+    if (res?.status === 200) {
+      setRooms(res.data);
+    } else {
+      console.error("Failed to fetch rooms");
     }
+    setIsLoading(false);
   };
 
   useEffect(() => {
