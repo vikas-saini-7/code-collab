@@ -1,19 +1,11 @@
-# Code Collab
-
-<p align="center">
-  <img src="app/src/assets/logo.png" alt="Code Collab Logo" width="150"/>
-</p>
+<div style="display: flex; align-items: center; justify-content: center; margin-bottom: 20px;">
+  <img src="app/src/assets/logo.png" alt="Code Collab Logo" width="120" style="margin-right: 20px;"/>
+  <h1 style="margin: 0;">Code Collab</h1>
+</div>
 
 Code Collab is a real-time code collaboration platform where collaborators can edit code, chat, and (soon) video call in shared project rooms.
 
 In Simple <b>Code Collab is Google Meet but for Code.</b>
-
-<!-- ---
-
-## Live Demo
-
-Visit the live app here:
-[https://realtime-code-collab.vercel.app](https://realtime-code-collab.vercel.app) -->
 
 ---
 
