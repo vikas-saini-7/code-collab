@@ -43,7 +43,7 @@ export function Header() {
             <Image
               src={logo}
               alt="Code Collab Logo"
-              className="w-10 mr-2 rounded-md"
+              className="w-10 mr-1 rounded-md"
             />
             <span className="text-xl font-bold">Code Collab</span>
           </Link>
@@ -56,7 +56,7 @@ export function Header() {
               <DropdownMenuTrigger asChild>
                 <Button
                   variant="ghost"
-                  className="relative h-8 w-8 rounded-full"
+                  className="relative h-8 w-8 rounded-full cursor-pointer"
                 >
                   <Avatar className="h-8 w-8">
                     <AvatarFallback>

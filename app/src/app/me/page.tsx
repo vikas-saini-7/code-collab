@@ -67,6 +67,14 @@ const ProfilePage = () => {
             <TabsContent value="rooms">
               <MyRooms />
             </TabsContent>
+
+            <TabsContent value="privacy">
+              <div>Coming soon..</div>
+            </TabsContent>
+
+            <TabsContent value="security">
+              <div>Coming soon..</div>
+            </TabsContent>
           </Tabs>
         </div>
       </div>
