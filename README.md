@@ -1,5 +1,9 @@
 # Code Collab
 
+<p align="center">
+  <img src="app/src/assets/logo.png" alt="Code Collab Logo" width="150"/>
+</p>
+
 Code Collab is a real-time code collaboration platform where collaborators can edit code, chat, and (soon) video call in shared project rooms.
 
 In Simple <b>Code Collab is Google Meet but for Code.</b>
