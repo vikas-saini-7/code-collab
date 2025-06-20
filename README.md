@@ -1,6 +1,6 @@
 # Code Collab
 
-Code Collab is a real-time code collaboration platform where developers can edit code, chat, and (soon) video call in shared project rooms.
+Code Collab is a real-time code collaboration platform where collaborators can edit code, chat, and (soon) video call in shared project rooms.
 
 In Simple <b>Code Collab is Google Meet but for Code.</b>
 
@@ -15,15 +15,15 @@ Visit the live app here:
 
 ## Overview
 
-Code Collab enables multiple developers to work on code files together in real time.  
+Code Collab enables multiple collaborators to work on code files together in real time.  
 It removes the need for constant pushing, pulling, or resolving merge conflicts.
 
 This tool is ideal for:
 
-- Pair programming
 - Developer interviews
-- Remote learning
 - Learning & teaching code
+- Pair programming
+- Remote learning
 
 ---
 
