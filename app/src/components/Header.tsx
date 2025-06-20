@@ -12,6 +12,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { signOut, useSession } from "next-auth/react";
+import Image from "next/image";
+import logo from "@/assets/logo.png"; // Adjust the path as necessary
 
 type User = {
   id: string;
@@ -37,7 +39,12 @@ export function Header() {
       <div className="container mx-auto px-8 flex h-16 items-center justify-between">
         <div className="flex items-center gap-6">
           {/* Code Collab logo text */}
-          <Link href="/" className="flex items-center">
+          <Link href="/" className="flex items-center ">
+            <Image
+              src={logo}
+              alt="Code Collab Logo"
+              className="w-10 mr-2 rounded-md"
+            />
             <span className="text-xl font-bold">Code Collab</span>
           </Link>
         </div>
