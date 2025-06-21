@@ -10,7 +10,6 @@ import { File, MessageCircle, Phone, Users, Video } from "lucide-react";
 import FilesContent from "@/components/room/tab-content/FilesTabContent";
 import SettingsContent from "@/components/room/tab-content/SettingsTabContent";
 import VideoContainer from "@/components/room/container/VideoContainer";
-import CodeContainer from "@/components/room/container/CodeContainer";
 import { useSession } from "next-auth/react";
 import LoadingSpinner from "@/components/common/LoadingSpinner";
 import Link from "next/link";
@@ -21,6 +20,8 @@ import CallingTabContent from "@/components/room/tab-content/CallingTabContent";
 import ChatTabContent from "@/components/room/tab-content/ChatTabContent";
 import VideochatTabContent from "@/components/room/tab-content/VideochatTabContent";
 import CollaboratorsTabContent from "@/components/room/tab-content/CollaboratorsTabContent";
+import { IFile } from "@/types/types";
+import CodeContainer from "@/components/room/container/CodeContainer";
 
 const page = () => {
   const params = useParams();
@@ -28,7 +29,7 @@ const page = () => {
   const { data: session, status } = useSession();
   const { socket, isConnected, joinRoom } = useSocket();
 
-  const [selectedFile, setSelectedFile] = useState<string | null>(null);
+  const [activeFile, setActiveFile] = useState<IFile | null>(null);
 
   const [activeTab, setActiveTab] = useState("files");
 
@@ -45,13 +46,13 @@ const page = () => {
     setActiveTab(tab);
   };
 
-  const handleSelectedFileChange = (fileId: string) => {
-    if (selectedFile === fileId) {
+  const handleActiveFileChange = (file: IFile) => {
+    if (activeFile === file) {
       return;
     } else {
-      setSelectedFile(fileId); // Select the new file
+      console.log("Active file changed to:", file);
+      setActiveFile(file);
     }
-    console.log("Selected file ID:", fileId);
   };
 
   useEffect(() => {
@@ -99,7 +100,10 @@ const page = () => {
         <ResizablePanel defaultSize={25}>
           <div className="">
             {activeTab === "files" && (
-              <FilesContent onChangeSelectedFile={handleSelectedFileChange} />
+              <FilesContent
+                activeFile={activeFile}
+                onChangeActiveFile={handleActiveFileChange}
+              />
             )}
             {activeTab === "chat" && <ChatTabContent />}
             {activeTab === "calling" && <CallingTabContent />}
@@ -116,7 +120,7 @@ const page = () => {
             {activeTab === "video" ? (
               <VideoContainer />
             ) : (
-              <CodeContainer selectedFile={selectedFile} />
+              <CodeContainer activeFile={activeFile} />
             )}
           </div>
         </ResizablePanel>
