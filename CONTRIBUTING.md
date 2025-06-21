@@ -18,7 +18,7 @@ We want to make contributing as easy and transparent as possible, whether it's:
 4. Make your changes
 5. Test your changes
 6. Push to your fork: `git push origin your-feature`
-7. Open a Pull Request
+7. Open a Pull Request on dev branch (not on main)
 
 ---
 
