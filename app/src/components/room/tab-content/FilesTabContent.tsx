@@ -9,11 +9,13 @@ import { fetchFiles } from "@/services/file-services";
 import { Skeleton } from "@/components/ui/skeleton";
 
 interface FilesTabContentProps {
-  onChangeSelectedFile: (fileId: string) => void;
+  activeFile: IFile | null;
+  onChangeActiveFile: (fileId: IFile) => void;
 }
 
 const FilesTabContent: React.FC<FilesTabContentProps> = ({
-  onChangeSelectedFile,
+  activeFile,
+  onChangeActiveFile,
 }) => {
   const { roomId } = useParams();
   const [files, setFiles] = useState<IFile[]>([]);
@@ -72,9 +74,11 @@ const FilesTabContent: React.FC<FilesTabContentProps> = ({
         {/* list mapping  */}
         {files.map((file, idx) => (
           <div
-            onClick={() => onChangeSelectedFile(file._id)}
+            onClick={() => onChangeActiveFile(file)}
             key={idx}
-            className="flex items-center justify-between hover:bg-gray-500/10 cursor-pointer rounded-lg"
+            className={`flex items-center justify-between border border-transparent hover:border-gray-500/10 hover:border-dashed cursor-pointer rounded-lg ${
+              activeFile?._id === file._id ? "bg-gray-500/10" : ""
+            }`}
           >
             <FileComponent
               fileName={file.name}
