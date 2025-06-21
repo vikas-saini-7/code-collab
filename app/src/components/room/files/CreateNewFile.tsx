@@ -31,7 +31,7 @@ const CreateNewFile: React.FC<CreateNewFileProps> = ({
       if (fileName) {
         console.log("New file created:", fileName);
         // Here you would typically call an API to create the file
-        const newFile: IFile = {
+        const newFile = {
           _id: "", // This will be set by the server
           name: fileName,
           content: "",
