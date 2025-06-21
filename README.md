@@ -11,7 +11,7 @@ In Simple <b>Code Collab is Google Meet but for Code.</b>
 
 ## Overview
 
-Code Collab enables multiple collaborators to work on code files together in real time.  
+Code Collab enables multiple collaborators to work on code files together in real time.
 
 This tool is ideal for:
 
@@ -42,7 +42,7 @@ This tool is ideal for:
 | Database       | MongoDB (Mongoose)                            |
 | Authentication | NextAuth.js                                   |
 | Real-Time      | Socket.IO, WebRTC                             |
-| Code Editor    | CodeMirror                                    |
+| Code Editor    | Monaco Editor                                 |
 
 ---
 
