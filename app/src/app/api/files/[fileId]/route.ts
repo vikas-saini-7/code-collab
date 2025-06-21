@@ -54,13 +54,6 @@ export async function PATCH(
 
     const { content } = await request.json();
 
-    if (!content) {
-      return NextResponse.json(
-        { error: "Content is required" },
-        { status: 400 }
-      );
-    }
-
     // Check if the file exists
     const file = await File.findById(fileId);
     if (!file) {

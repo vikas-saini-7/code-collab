@@ -3,4 +3,8 @@ export interface IFile {
   name: string;
   content: string;
   language: string;
+  roomId: string;
+  createdBy: string;
+  createdAt: string;
+  updatedAt: string;
 }
