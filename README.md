@@ -12,7 +12,6 @@ In Simple <b>Code Collab is Google Meet but for Code.</b>
 ## Overview
 
 Code Collab enables multiple collaborators to work on code files together in real time.  
-It removes the need for constant pushing, pulling, or resolving merge conflicts.
 
 This tool is ideal for:
 
