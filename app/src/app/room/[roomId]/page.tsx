@@ -50,7 +50,6 @@ const page = () => {
     if (activeFile === file) {
       return;
     } else {
-      console.log("Active file changed to:", file);
       setActiveFile(file);
     }
   };

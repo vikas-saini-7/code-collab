@@ -19,11 +19,18 @@ const CodeContainer: React.FC<CodeContainerProps> = ({
 }) => {
   const params = useParams();
   const roomId = params.roomId as string;
-  const [code, setCode] = useState<string>("");
+  const [fileContent, setFileContent] = useState<string>("");
   const [isSaving, setIsSaving] = useState<boolean>(false);
   const [showSaved, setShowSaved] = useState<boolean>(false);
   const { socket, isConnected, joinRoom, emitCodeChange } = useSocket();
   const { data: session } = useSession();
+
+  // Update local state when activeFile changes
+  useEffect(() => {
+    if (activeFile) {
+      setFileContent(activeFile.content);
+    }
+  }, [activeFile]);
 
   const debouncedSave = useCallback(
     debounce(async (fileId: string, content: string) => {
@@ -49,7 +56,7 @@ const CodeContainer: React.FC<CodeContainerProps> = ({
   );
 
   const handleCodeChange = (newCode: string) => {
-    setCode(newCode);
+    setFileContent(newCode);
     if (activeFile) {
       // Save to the database with debounce
       debouncedSave(activeFile._id, newCode);
@@ -67,22 +74,20 @@ const CodeContainer: React.FC<CodeContainerProps> = ({
   };
 
   useEffect(() => {
-    if (roomId && isConnected) {
+    if (roomId && isConnected && socket) {
       // Listen for code updates from other users
-      if (socket) {
-        socket.on("code-update", ({ fileId, code: updatedCode, sender }) => {
-          // Only update if it's the current file and not from self
-          if (fileId === activeFile?._id && session?.user?.id !== sender) {
-            setCode(updatedCode);
-          }
-        });
+      socket.on("code-update", ({ fileId, code: updatedCode, sender }) => {
+        // Only update if it's the current file and not from self
+        if (fileId === activeFile?._id && session?.user?.id !== sender) {
+          setFileContent(updatedCode); // Update state instead of directly mutating activeFile
+        }
+      });
 
-        return () => {
-          socket.off("code-update");
-        };
-      }
+      return () => {
+        socket.off("code-update");
+      };
     }
-  }, [roomId, isConnected, socket, activeFile, session?.user?.id, joinRoom]);
+  }, [roomId, isConnected, socket, activeFile, session?.user?.id]);
 
   return (
     <div className="relative">
@@ -99,7 +104,7 @@ const CodeContainer: React.FC<CodeContainerProps> = ({
             </div>
           )}
           <CodeEditor
-            code={activeFile.content}
+            code={fileContent}
             onChange={handleCodeChange}
             language={activeFile.language}
           />
