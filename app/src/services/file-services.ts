@@ -1,8 +1,14 @@
 import { IFile } from "@/types/types";
 import axios from "axios";
 
+interface SaveFilePayload {
+  name: string;
+  content: string;
+  language: string;
+}
+
 export const saveFile = async (
-  { name, content, language }: IFile,
+  { name, content, language }: SaveFilePayload,
   roomId: string
 ) => {
   try {
