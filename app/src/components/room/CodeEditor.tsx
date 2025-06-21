@@ -17,7 +17,7 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
   return (
     <Editor
       height="calc(100vh)"
-      defaultLanguage={language || "javascript"}
+      language={language}
       value={code}
       onChange={(value) => onChange(value || "")}
       theme="vs-dark"
